@@ -3,7 +3,7 @@
     <el-container>
       <el-aside class="side-toolbar">hello</el-aside>
       <el-main class="conversation">heas
-        <el-icon color="#39c5bb" size="168x168"><Share /></el-icon>
+        <el-icon><Share /></el-icon>
       </el-main>
     </el-container>
   </div>
