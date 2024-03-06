@@ -25,31 +25,35 @@
 </template>
 
 <script setup>
-// import { ElMessage } from "element-plus";
-// import { reactive } from "vue";
+import { loginUser } from "@/api/user";
+import { reactive } from "vue";
+import { ElMessage } from "element-plus";
 
-// const user = reactive({
-//   username: "",
-//   password: "",
-// });
+const user = reactive({
+  username: "",
+  password: "",
+});
 
-// const rules= {
-//   username: [
-//     { required: true, message: "请输入用户名", trigger: "blur" },
-//   ],
-//   password: [
-//     { required: true, message: "请输入密码", trigger: "blur" },
-//   ],
-// };
+const rules = {
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+};
 
-// const handelLogin = async () => {
-//   try {
-//     const response = await loginUser();
-//     console.log(response);
-//   } catch (error) {
-//     ElMessage.error("登录失败");
-//   }
-// }
+const handelLogin = async () => {
+  try {
+    const response = await loginUser(user);
+    const token = response.token;
+    localStorage.setItem("token", token);
+  } catch (error) {
+    ElMessage.error("登录失败");
+  }
+
+  return {
+    user,
+    rules,
+    handelLogin,
+  };
+};
 </script>
 
 <style lang="scss" scoped>
