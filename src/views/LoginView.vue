@@ -4,12 +4,12 @@ import { reactive } from "vue";
 import { ElMessage } from "element-plus";
 
 const user = reactive({
-  username: "",
+  email: "",
   password: "",
 });
 
 const rules = {
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  email: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
@@ -39,12 +39,12 @@ const handelLogin = async () => {
         label-position="top"
       >
         <el-form-item
-          label="Username"
+          label="Email"
           size="large"
         >
           <el-input
-            v-model="user.username"
-            placeholder="Username"
+            v-model="user.email"
+            placeholder="E-mail"
           />
         </el-form-item>
         <el-form-item
