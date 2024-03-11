@@ -19,7 +19,7 @@ const handelLogin = async () => {
     const token = response.token;
     localStorage.setItem("token", token);
   } catch (error) {
-    ElMessage.error("登录失败");
+    ElMessage.error("登录失败，请检查用户名和密码");
   }
 
   return {
@@ -34,11 +34,23 @@ const handelLogin = async () => {
   <div class="panel-wrapper">
     <el-card class="panel">
       <h1>登录</h1>
-      <el-form class="login-panel" label-position="top">
-        <el-form-item label="Username" size="large">
-          <el-input v-model="user.username" placeholder="Username" />
+      <el-form
+        class="login-panel"
+        label-position="top"
+      >
+        <el-form-item
+          label="Username"
+          size="large"
+        >
+          <el-input
+            v-model="user.username"
+            placeholder="Username"
+          />
         </el-form-item>
-        <el-form-item label="Password" size="large">
+        <el-form-item
+          label="Password"
+          size="large"
+        >
           <el-input
             v-model="user.password"
             placeholder="Password"
@@ -48,8 +60,15 @@ const handelLogin = async () => {
           />
         </el-form-item>
         <el-form-item class="login-btn">
-          <el-button type="info"> 重置 </el-button>
-          <el-button type="warning" @click="handelLogin"> 登录 </el-button>
+          <el-button type="info">
+            重置
+          </el-button>
+          <el-button
+            type="warning"
+            @click="handelLogin"
+          >
+            登录
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>

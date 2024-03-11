@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^1.6.7",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.10",
     "element-plus": "^2.6.0",
+    "md-editor-v3": "^4.12.1",
     "sass": "^1.71.1",
     "sass-loader": "^14.1.1",
     "vue": "^3.2.13",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@babel/plugin-transform-private-methods": "^7.23.3",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",

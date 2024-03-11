@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function loginUser(user) {
+export const loginUser = async (user) =>{
   try {
     const response = await axios.post('/api/login', user);
     return response;
@@ -10,4 +10,4 @@ async function loginUser(user) {
   }
 }
 
-export default loginUser;
+
