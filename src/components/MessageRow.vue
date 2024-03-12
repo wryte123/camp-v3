@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 
 defineProps({
-  message: { type: Object, required: true },
+  message: { type: String, required: true },
   avatar: { type: String, default: "https://www.jarcheng.top/images/logo.jpg" },
 });
 </script>
