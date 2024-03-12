@@ -5,19 +5,21 @@ import { ElMessage } from "element-plus";
 
 const user = reactive({
   email: "",
-  password: "",
+  p: "",
 });
 
 const rules = {
   email: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  p: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
 const handelLogin = async () => {
   try {
+    console.log(user);
     const response = await loginUser(user);
     const token = response.token;
     localStorage.setItem("token", token);
+    ElMessage.success("登录成功");
   } catch (error) {
     ElMessage.error("登录失败，请检查用户名和密码");
   }
@@ -52,7 +54,7 @@ const handelLogin = async () => {
           size="large"
         >
           <el-input
-            v-model="user.password"
+            v-model="user.p"
             placeholder="Password"
             show-password
             type="password"
@@ -61,7 +63,7 @@ const handelLogin = async () => {
         </el-form-item>
         <el-form-item class="login-btn">
           <el-button type="info">
-            重置
+            注册
           </el-button>
           <el-button
             type="warning"

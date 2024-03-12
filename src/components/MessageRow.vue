@@ -1,10 +1,10 @@
 <script setup>
-// import { defineProps } from "vue";
+import { defineProps } from "vue";
 
-// const props = defineProps({
-//   message: { type: Object, required: true },
-//   avatar: { type: String, default: "https://www.jarcheng.top/images/logo.jpg" },
-// });
+defineProps({
+  message: { type: Object, required: true },
+  avatar: { type: String, default: "https://www.jarcheng.top/images/logo.jpg" },
+});
 </script>
 
 <template>
