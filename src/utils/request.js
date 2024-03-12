@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const service = axios.create({
+export const service = axios.create({
 	baseURL: '/api',
 	timeout: 120000,
 })
@@ -15,5 +15,3 @@ service.interceptors.request.use((config) => {
   // 对请求错误做些什么
   return Promise.reject(error)
 })
-
-export default service

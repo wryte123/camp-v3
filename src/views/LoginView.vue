@@ -13,7 +13,7 @@ const rules = {
   p: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
-const handelLogin = async () => {
+const handleLogin = async () => {
   try {
     console.log(user);
     const response = await loginUser(user);
@@ -27,7 +27,7 @@ const handelLogin = async () => {
   return {
     user,
     rules,
-    handelLogin,
+    handleLogin,
   };
 };
 </script>
@@ -67,7 +67,7 @@ const handelLogin = async () => {
           </el-button>
           <el-button
             type="warning"
-            @click="handelLogin"
+            @click="handleLogin"
           >
             登录
           </el-button>
