@@ -72,6 +72,7 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
+
   .panel {
     position: absolute;
     top: 50%;
