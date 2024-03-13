@@ -13,7 +13,7 @@ const rules = {
   p: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
-const handelLogin = async () => {
+const handleLogin = async () => {
   try {
     console.log(user);
     const response = await loginUser(user);
@@ -27,7 +27,7 @@ const handelLogin = async () => {
   return {
     user,
     rules,
-    handelLogin,
+    handleLogin,
   };
 };
 </script>
@@ -36,23 +36,11 @@ const handelLogin = async () => {
   <div class="panel-wrapper">
     <el-card class="panel">
       <h1>登录</h1>
-      <el-form
-        class="login-panel"
-        label-position="top"
-      >
-        <el-form-item
-          label="Email"
-          size="large"
-        >
-          <el-input
-            v-model="user.email"
-            placeholder="E-mail"
-          />
+      <el-form class="login-panel" label-position="top">
+        <el-form-item label="Email" size="large">
+          <el-input v-model="user.email" placeholder="E-mail" />
         </el-form-item>
-        <el-form-item
-          label="Password"
-          size="large"
-        >
+        <el-form-item label="Password" size="large">
           <el-input
             v-model="user.p"
             placeholder="Password"
@@ -62,15 +50,8 @@ const handelLogin = async () => {
           />
         </el-form-item>
         <el-form-item class="login-btn">
-          <el-button type="info">
-            注册
-          </el-button>
-          <el-button
-            type="warning"
-            @click="handelLogin"
-          >
-            登录
-          </el-button>
+          <el-button type="info"> 注册 </el-button>
+          <el-button type="warning" @click="handleLogin"> 登录 </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -83,6 +64,7 @@ const handelLogin = async () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
+
   .panel {
     position: absolute;
     top: 50%;
