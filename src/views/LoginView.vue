@@ -8,7 +8,7 @@ const user = reactive({
   p: "",
 });
 
-const rules = {
+const rules = reactive({
   email: [
     { required: true, message: "请输入电子邮箱", trigger: "blur" },
     { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
@@ -17,7 +17,7 @@ const rules = {
     { required: true, message: "请输入密码", trigger: "blur" },
     { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
   ],
-};
+});
 
 const handleLogin = async () => {
   try {

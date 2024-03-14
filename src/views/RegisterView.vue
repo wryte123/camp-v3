@@ -1,99 +1,77 @@
 <script setup>
 import { reactive } from "vue";
 
-const user = reactive({
-  email: "",
+const rulesForm = reactive({
   username: "",
-  p: "",
-  vp: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
 
-
-const rules = {
+const rules= {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
-    {
-      min: 3,
-      max: 20,
-      message: "用户名长度在 3 到 20 个字符",
-      trigger: "blur",
-    },
   ],
   email: [
     { required: true, message: "请输入电子邮箱", trigger: "blur" },
     { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
   ],
-  p: [
+  password: [
     { required: true, message: "请输入密码", trigger: "blur" },
     { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
   ],
-  vp: [{ validator: validatePass, trigger: "blur" }],
+  confirmPassword: [
+    { required: true, message: "请再次输入密码", trigger: "blur" },
+  ],
 };
 
-const validatePass = (rule, value, callback) => {
-  if (value === "") {
-    callback(new Error("请再次输入密码"));
-  } else if (value !== user.p) {
-    callback(new Error("两次输入密码不一致!"));
-  } else {
-    callback();
-  }
-};
-
-// const handleReg = async () => {
-//   return {
-//     user,
-//     rules,
-//   };
-// };
 </script>
 
 <template>
   <div class="panel-wrapper">
     <el-card class="panel">
       <h1>注册</h1>
-      <el-form class="register-panel" label-position="top" :rules="rules">
+      <el-form class="reg-panel" label-position="top" :rules="rules">
         <el-form-item label="用户名" size="large" prop="username">
-          <el-input v-model="user.username" placeholder="Username" />
+          <el-input v-model="rulesForm.username" placeholder="username" />
         </el-form-item>
-        <el-form-item label="电子邮件" size="large" prop="email">
-          <el-input v-model="user.email" placeholder="E-mail" />
+        <el-form-item label="Email" size="large" prop="email">
+          <el-input v-model="rulesForm.email" placeholder="E-mail" />
         </el-form-item>
-        <el-form-item label="密码" size="large" prop="p">
+        <el-form-item label="Password" size="large">
           <el-input
-            v-model="user.p"
+            v-model="rulesForm.password"
             placeholder="Password"
             show-password
             type="password"
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item label="确认密码" size="large" prop="vp">
+        <el-form-item label="确认密码" size="large" >
           <el-input
-            v-model="user.vp"
-            placeholder="Confirmed"
+            v-model="rulesForm.confirmPassword"
+            placeholder="Confirm Password"
             show-password
             type="password"
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item>
-          <el-button @click="$router.push({ name: 'login' })">
-            返回登陆
-          </el-button>
-          <el-button @click="handleReg" type="success">注册</el-button>
+        <el-form-item class="reg-btn">
+          <el-button @click="$router.push({ name: 'login' })">返回登录</el-button>
+          <el-button type="primary" @click="handleRegister">注册</el-button>
         </el-form-item>
       </el-form>
     </el-card>
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .panel-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+
   .panel {
     position: absolute;
     top: 50%;
