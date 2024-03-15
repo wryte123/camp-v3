@@ -9,15 +9,18 @@ import { MessageRow } from "../../components/MessageRow.vue";
     <div class="chat-panel">
       <!-- 聊天面板左侧工具栏 -->
       <div class="tool-sidepanel">
-        <div class="title">123123</div>
-        <div class="description">123123123</div>
+        <div class="title">
+          123123
+        </div>
+        <div class="description">
+          123123123
+        </div>
       </div>
       <!-- 聊天面板右侧聊天内容 -->
       <div class="message-panel" />
       <el-divider :border-style="soild" />
       <div class="message-list">
-        <MessageRow
-         ></MessageRow>
+        <MessageRow />
       </div>
     </div>
   </div>

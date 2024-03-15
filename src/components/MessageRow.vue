@@ -13,17 +13,21 @@ defineProps({
     <div class="row">
       <!-- 头像 -->
       <div class="avatar-wrapper">
-        <el-avatar :src="avatar" class="avatar" shape="square" />
+        <el-avatar
+          :src="avatar"
+          class="avatar"
+          shape="square"
+        />
       </div>
       <!-- 消息内容 -->
       <div class="message">
         <!-- 预览模式,展示markdown -->
         <MdPreview
+          v-if="message.content"
           :id="preview - only"
           :preview-theme="smart - blue"
           :model-value="message.content"
-          v-if="message.content"
-        ></MdPreview>
+        />
       </div>
     </div>
   </div>

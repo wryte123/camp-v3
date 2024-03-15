@@ -8,33 +8,31 @@ const user = reactive({
   p: "",
 });
 
-const rules = reactive({
+const rules = {
   email: [
     { required: true, message: "请输入电子邮箱", trigger: "blur" },
     { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
   ],
   p: [
     { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
+    { pattern: /^\S{6,20}$/, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
   ],
-});
+};
 
 const handleLogin = async () => {
   try {
     console.log(user);
     const response = await loginUser(user);
     const token = response.token;
+    const userId = response.u_id;
     localStorage.setItem("token", token);
     ElMessage.success("登录成功");
+    localStorage.setItem("userId", userId);
   } catch (error) {
     ElMessage.error("登录失败，请检查电子邮箱和密码");
   }
 
-  return {
-    user,
-    rules,
-    handleLogin,
-  };
+  return handleLogin;
 };
 </script>
 
@@ -42,11 +40,27 @@ const handleLogin = async () => {
   <div class="panel-wrapper">
     <el-card class="panel">
       <h1>登录</h1>
-      <el-form class="login-panel" label-position="top" :rules="rules">
-        <el-form-item label="Email" size="large" prop="email">
-          <el-input v-model="user.email" placeholder="E-mail" />
+      <el-form
+        class="login-panel"
+        label-position="top"
+        :model="user"
+        :rules="rules"
+      >
+        <el-form-item
+          label="Email"
+          size="large"
+          prop="email"
+        >
+          <el-input
+            v-model="user.email"
+            placeholder="E-mail"
+          />
         </el-form-item>
-        <el-form-item label="Password" size="large" prop="p">
+        <el-form-item
+          label="Password"
+          size="large"
+          prop="p"
+        >
           <el-input
             v-model="user.p"
             placeholder="Password"
@@ -59,7 +73,12 @@ const handleLogin = async () => {
           <el-button @click="$router.push({ name: 'register' })">
             注册
           </el-button>
-          <el-button type="success" @click="handleLogin"> 登录 </el-button>
+          <el-button
+            type="success"
+            @click="handleLogin"
+          >
+            登录
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
