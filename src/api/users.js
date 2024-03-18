@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const loginUser = async (user) =>{
+export const loginUser = async (user) => {
   try {
     const response = await axios.post('/login', user);
     return response;
@@ -10,7 +10,7 @@ export const loginUser = async (user) =>{
   }
 }
 
-export const registerUser = async (user) =>{
+export const registerUser = async (user) => {
   try {
     const response = await axios.post('/reg', user);
     return response;
@@ -18,4 +18,8 @@ export const registerUser = async (user) =>{
     console.error(error);
     throw error;
   }
+}
+
+export const getCampsOfUser = async () => {
+
 }
