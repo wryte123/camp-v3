@@ -19,3 +19,4 @@ export const registerUser = async (user) =>{
     throw error;
   }
 }
+

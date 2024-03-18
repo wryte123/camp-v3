@@ -1,5 +1,8 @@
 <template>
-  <button @click="handleClick" :class="{ colored: isColored }">
+  <button
+    :class="{ colored: isColored }"
+    @click="handleClick"
+  >
     {{ label }}
   </button>
 </template>
@@ -17,15 +20,15 @@ export default {
       default: false,
     },
   },
-  methods: {
-    handleClick() {
-      this.$emit("clickEvent");
-    },
-  },
 
   computed: {
     isColored() {
       return this.colored;
+    },
+  },
+  methods: {
+    handleClick() {
+      this.$emit("clickEvent");
     },
   },
 };
