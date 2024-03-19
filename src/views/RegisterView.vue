@@ -1,11 +1,18 @@
 <script setup>
 import { reactive } from "vue";
+import { registerUser } from "../api/users";
 
 const rulesForm = reactive({
   username: "",
   email: "",
   password: "",
   confirmPassword: "",
+});
+
+const user = reactive({
+  username: "",
+  email: "",
+  p: "",
 });
 
 const rules = reactive({
@@ -36,8 +43,20 @@ function valipassword(rule, values, callback) {
   }
 }
 
-const handleRegister = () => {
-  console.log(rulesForm);
+const handleRegister = async () => {
+  try {console.log(rulesForm);
+  user.username = rulesForm.username;
+  user.email = rulesForm.email;
+  user.p = rulesForm.password;
+  const response = await registerUser(user);
+  console.log(response);
+  const token = response.token;
+  const userId = response.u_id;
+  localStorage.setItem("token", token);
+  localStorage.setItem("userId", userId);}
+  catch (error) {
+    console.log(error);
+  }
 };
 
 </script>

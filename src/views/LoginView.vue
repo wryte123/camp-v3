@@ -28,6 +28,7 @@ const handleLogin = async () => {
     localStorage.setItem("token", token);
     ElMessage.success("登录成功");
     localStorage.setItem("userId", userId);
+    console.log(response);
   } catch (error) {
     ElMessage.error("登录失败，请检查电子邮箱和密码");
   }
