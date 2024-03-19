@@ -9,7 +9,7 @@
 import ProjectInfo from "./ProjectInfo.vue";
 
 export default {
-  name: "ProjectPart",
+  name: "ProjectPanel",
 
   components: {
     Info: ProjectInfo,

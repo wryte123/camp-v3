@@ -1,10 +1,26 @@
 <template>
-  <element id="message">
-    <div id="bubble">
-      <component
-        :is="messageComponent"
-        :message="message"
-      />
+  <element>
+    <div v-if="message.userID === currentUserID" class="message-self">
+      <div class="timestamp">message.timestamp</div>
+      <div class="bubble">
+        <component
+          :is="messageComponent"
+          :message="message"
+          @rend="handleRend"
+        ></component>
+      </div>
+      <el-avatar :size="size" :src="circleUrl" />
+    </div>
+    <div v-else class="message-other">
+      <el-avatar :size="size" :src="circleUrl" />
+      <div class="bubble">
+        <component
+          :is="messageComponent"
+          :message="message"
+          @rend="handleRend"
+        ></component>
+      </div>
+      <div class="timestamp">message.timestamp</div>
     </div>
   </element>
 </template>
@@ -17,7 +33,7 @@ export default {
 
   props: {
     message: {
-      typeof: Object,
+      type: Object,
       required: true,
     },
     avatar: {
@@ -26,16 +42,32 @@ export default {
     },
   },
 
+  data() {
+    return {
+      currentUserID: 1,
+    };
+  },
+
   computed: {
     messageComponent() {
       const typeMap = {
         text: defineAsyncComponent(() => import("./TextMessage.vue")),
         image: defineAsyncComponent(() => import("./ImageMessage.vue")),
+        task: defineAsyncComponent(() => import("./TaskMessage.vue")),
+        anno: defineAsyncComponent(() => import("./AnnoMessage.vue")),
+        doc: defineAsyncComponent(() => import("./DocMessage.vue")),
       };
       return typeMap[this.message.type] || this.defaultComponent;
     },
     defaultComponent() {
       return () => defineAsyncComponent(import("./DefaultMessage.vue"));
+    },
+  },
+
+  method: {
+    handleRend(payload) {
+      console.log(1);
+      this.$emit("rend", payload);
     },
   },
 };
@@ -44,33 +76,45 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/global.scss";
 
-#message {
-  min-height: 60px;
+.message-self,
+.message-other {
   width: 100%;
-  background-color: theme-color(grey);
+
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+
+  gap: 10px;
 
   box-sizing: border-box;
   padding: 10px;
+
+  .bubble {
+    border-radius: 8px;
+
+    background-color: theme-color(white);
+
+    box-sizing: border-box;
+
+    padding: 10px 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    * {
+      margin: 0;
+    }
+  }
+  .timestamp {
+    /* 根据需要自定义时间戳的样式 */
+    color: theme-color(grey);
+    font-size: 0.8em;
+    align-self: flex-end;
+  }
 }
 
-#bubble {
-  min-height: 30px;
-  min-width: 100px;
-
-  border-radius: 8px;
-
-  background-color: theme-color(primary);
-
-  box-sizing: border-box;
-
-  padding: 10px 10px;
-
-  display: flex;
-  justify-items: center;
-  align-items: center;
-
-  * {
-    margin: 0;
-  }
+.message-self {
+  justify-content: flex-end; /* 或者其他颜色以区分 */
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
-  <button :class="{ colored: isColored }" @click="handleClick">
+  <button @click="handleClick" :class="{ colored: isColored }">
     {{ label }}
   </button>
 </template>
 
 <script>
 export default {
-  name: "PageButton",
+  name: "RegularButton",
   props: {
     label: {
       type: String,
@@ -17,15 +17,15 @@ export default {
       default: false,
     },
   },
+  methods: {
+    handleClick(event) {
+      this.$emit("click", event);
+    },
+  },
 
   computed: {
     isColored() {
       return this.colored;
-    },
-  },
-  methods: {
-    handleClick(event) {
-      this.$emit("click", event);
     },
   },
 };
@@ -48,12 +48,11 @@ export default {
 }
 
 button {
-  width: 200px;
-  height: 60px;
-  padding: 10px 20px;
-  font-size: 24px;
+  height: 30px;
+  padding: 3px 10px;
+  font-size: 16px;
 
-  border-radius: 50px;
+  border-radius: 10px;
   border-top: 3px solid theme-color(text);
   border-bottom: 3px solid theme-color(text);
   border-left: 3px solid theme-color(text);

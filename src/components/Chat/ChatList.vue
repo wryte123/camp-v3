@@ -1,12 +1,14 @@
-<!-- <template>
+<template>
   <element>
-    <div
-      v-for="(item, index) in dataList"
-      :key="index"
-    >
-      <h3>{{ item.name }}</h3>
-      <p>{{ item.newMessageCount }}</p>
-    </div>
+    <el-scrollbar height="100vh">
+      <div v-for="(item, index) in dataList" :key="index" class="camp-brief">
+        <el-avatar></el-avatar>
+        <div>
+          <h3>{{ item.name }}</h3>
+          <p>收到{{ item.newMessageCount }}条新消息</p>
+        </div>
+      </div>
+    </el-scrollbar>
   </element>
 </template>
 
@@ -15,7 +17,24 @@ export default {
   name: "ChatList",
   data() {
     return {
-      dataList: [],
+      dataList: [
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+        { name: "老登交流群", newMessageCount: 1 },
+      ],
     };
   },
 
@@ -29,49 +48,39 @@ element {
   margin: 0;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
-  border-style: solid;
-  border-width: 1px;
-  border-color: theme-color(text);
-  div {
-    height: 2em;
+  .camp-brief {
+    height: 5em;
     width: 100%;
 
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
+    box-sizing: border-box;
     padding: 10px;
 
     border-width: 1px;
     border-color: theme-color(text);
 
-    background-color: theme-color(white);
+    background-color: theme-color(background-upper);
 
+    transition: all 0.1s ease-in;
+    gap: 10px;
     &:hover {
       background-color: theme-color(grey);
     }
+
+    * {
+      margin: 0;
+    }
+
+    div {
+      justify-content: flex-start;
+
+      text-align: left;
+    }
   }
 }
-</style> -->
-
-
-
-<script setup>
-// const ChatSession = {
-//   topic: '', // 聊天会话的主题
-//   statistic: {}, // 与聊天会话相关的统计信息
-//   messages: [], // 聊天会话中的消息列表
-//   members: [], // 聊天会话的成员列表
-// };
-
-</script>
-
-<template>
-  <div> hek</div>
-</template>
-
-
-
-<style>
-
 </style>

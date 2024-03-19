@@ -1,6 +1,7 @@
 <template>
   <div id="home-view">
-    <!-- Nav bar component -->
+    <Bar follow />
+
     <header>
       <div>
         <Title />
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+import TopBar from "../components/TopBar.vue";
 import MainPageCard from "../components/HomePage/Card.vue";
 import HomePageTitle from "../components/HomePage/Title.vue";
 
@@ -36,6 +38,7 @@ export default {
   components: {
     Title: HomePageTitle,
     Card: MainPageCard,
+    Bar: TopBar,
   },
 
   methods: {
@@ -57,12 +60,11 @@ export default {
   width: 100%;
   display: grid;
   grid-template-rows: 4fr, auto;
-  overflow: hidden;
 
   color: theme-color(text);
 
   header {
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
 
     display: flex;
@@ -72,7 +74,7 @@ export default {
 
     div {
       display: flex;
-      height: 80%;
+      height: 100%;
     }
 
     section {
