@@ -7,9 +7,11 @@
       :style="{ top: `${window.top}px`, left: `${window.left}px` }"
       @mousedown="startDrag(index, $event)"
     >
-      <div class="drag-handle"><More /></div>
+      <div class="drag-handle">
+        <More />
+      </div>
       <h3>{{ window.name }}</h3>
-      <component :is="window.component"></component>
+      <component :is="window.component" />
     </div>
   </element>
 </template>
@@ -18,6 +20,14 @@
 import ProjectPart from "./Project/ProjectPart.vue";
 
 export default {
+  components: {
+    ComponentA: {
+      ProjectPart: ProjectPart,
+    },
+    ComponentB: {
+      /* 定义ComponentB */
+    },
+  },
   data() {
     return {
       windows: [
@@ -26,14 +36,6 @@ export default {
       ],
       dragging: null,
     };
-  },
-  components: {
-    ComponentA: {
-      ProjectPart: ProjectPart,
-    },
-    ComponentB: {
-      /* 定义ComponentB */
-    },
   },
   methods: {
     startDrag(index, event) {

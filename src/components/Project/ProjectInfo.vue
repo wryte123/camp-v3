@@ -7,18 +7,26 @@
       :direction="vertical"
       border
     >
-      <el-descriptions-item label="创建者">{{
-        ProjectOwner
-      }}</el-descriptions-item>
-      <el-descriptions-item label="立项时间">{{
-        ProjectCreatedTime
-      }}</el-descriptions-item>
-      <el-descriptions-item label="状态">{{
-        ProjectStatus
-      }}</el-descriptions-item>
-      <el-descriptions-item label="描述">{{
-        ProjectDescription
-      }}</el-descriptions-item>
+      <el-descriptions-item label="创建者">
+        {{
+          ProjectOwner
+        }}
+      </el-descriptions-item>
+      <el-descriptions-item label="立项时间">
+        {{
+          ProjectCreatedTime
+        }}
+      </el-descriptions-item>
+      <el-descriptions-item label="状态">
+        {{
+          ProjectStatus
+        }}
+      </el-descriptions-item>
+      <el-descriptions-item label="描述">
+        {{
+          ProjectDescription
+        }}
+      </el-descriptions-item>
     </el-descriptions>
   </element>
 </template>

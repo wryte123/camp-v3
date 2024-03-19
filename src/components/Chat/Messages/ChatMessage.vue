@@ -1,7 +1,10 @@
 <template>
   <element id="message">
     <div id="bubble">
-      <component :is="messageComponent" :message="message"></component>
+      <component
+        :is="messageComponent"
+        :message="message"
+      />
     </div>
   </element>
 </template>
@@ -16,6 +19,10 @@ export default {
     message: {
       typeof: Object,
       required: true,
+    },
+    avatar: {
+      type: String,
+      default: "",
     },
   },
 
