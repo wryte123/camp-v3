@@ -1,23 +1,42 @@
-<script setup></script>
-
 <template>
   <main>
     <Bar />
-    <List />
-    <MainPanel />
+    <transition name="panel-transition"
+      ><MainPanel :class="{ expanded: isSubPanelExpanded }" />
+    </transition>
+
+    <transition name="panel-transition"
+      ><SubPanel
+        :class="{ expanded: isSubPanelExpanded }"
+        @toggle="toggleExpand"
+    /></transition>
   </main>
 </template>
 
 <script>
 import SideBar from "@/components/SideBar.vue";
-import ChatList from "@/components/Chat/ChatList.vue";
 import ChatPanel from "@/components/Chat/ChatPanel.vue";
+import SubPanel from "@/components/Chat/SubPanel.vue";
 
 export default {
   components: {
     Bar: SideBar,
-    List: ChatList,
     MainPanel: ChatPanel,
+    SubPanel: SubPanel,
+  },
+
+  data() {
+    return {
+      isMainPanelExpanded: true,
+      isSubPanelExpanded: false,
+    };
+  },
+
+  methods: {
+    toggleExpand() {
+      this.isMainPanelExpanded = !this.isMainPanelExpanded;
+      this.isSubPanelExpanded = !this.isSubPanelExpanded;
+    },
   },
 };
 </script>
@@ -29,8 +48,7 @@ main {
   height: 100vh;
   width: 100%;
 
-  display: grid;
-  grid-template-columns: 1fr 2fr 8fr;
-  grid-template-rows: 1fr;
+  display: flex;
+  flex-direction: row;
 }
 </style>

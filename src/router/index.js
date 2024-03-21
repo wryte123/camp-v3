@@ -58,6 +58,14 @@ const routes = [
     meta: {
       scrollbar: false,
     }
+  },
+  {
+    path: '/projects',
+    name: 'projects',
+    component: () => import('../views/ProjectsView.vue'),
+    meta: {
+      scrollbar: true,
+    }
   }
 ]
 

@@ -34,20 +34,28 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/global.scss";
 
-#task-panel {
+#anno-msg {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+
+  min-width: 200px;
 
   * {
     margin: 0;
   }
 
-  h3 {
+  h3,
+  small {
     align-self: flex-start;
   }
 
   p {
     background-color: theme-color(grey);
+  }
+
+  button {
+    width: 100%;
   }
 }
 </style>

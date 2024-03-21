@@ -1,8 +1,8 @@
 <template>
   <element id="camp-panel">
     <div id="camp-card">
-      <h1>data.chatName</h1>
-      <small>data.chatMemberCount</small>
+      <h1>camp.chatName</h1>
+      <small>camp.chatMemberCount</small>
     </div>
     <MemberCard v-for="member in members" :key="member.userId" :data="member" />
   </element>
@@ -17,7 +17,7 @@ export default {
   },
 
   props: {
-    data: {
+    camp: {
       type: Object,
       required: true,
     },

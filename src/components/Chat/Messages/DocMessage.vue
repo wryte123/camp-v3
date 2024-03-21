@@ -1,6 +1,8 @@
 <template>
-  <p>message.docName</p>
-  <Button label="下载" @click="download()" />
+  <element>
+    <p>message.docName</p>
+    <Button label="下载" @click="download()" />
+  </element>
 </template>
 
 <script>

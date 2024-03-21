@@ -48,9 +48,10 @@ export default {
 }
 
 button {
-  height: 30px;
+  height: 40px;
   padding: 3px 10px;
   font-size: 16px;
+  width: 80px;
 
   border-radius: 10px;
   border-top: 3px solid theme-color(text);

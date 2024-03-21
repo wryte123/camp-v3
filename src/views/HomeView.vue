@@ -59,7 +59,7 @@ export default {
 #home-view {
   width: 100%;
   display: grid;
-  grid-template-rows: 4fr, auto;
+  grid-template-rows: 4fr auto;
 
   color: theme-color(text);
 
@@ -70,7 +70,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    background: theme-color(background);
+    background: theme-color(white);
 
     div {
       display: flex;

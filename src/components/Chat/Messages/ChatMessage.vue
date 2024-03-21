@@ -94,6 +94,8 @@ export default {
 
     background-color: theme-color(white);
 
+    box-shadow: 0 0 1px 1px black;
+
     box-sizing: border-box;
 
     padding: 10px 10px;
