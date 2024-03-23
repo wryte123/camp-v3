@@ -14,5 +14,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(router);
 app.use(Element);
-app.use("MdPreview", MdPreview);
+app.component("MdPreview", MdPreview);
 app.mount("#app");
