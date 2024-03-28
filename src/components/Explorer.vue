@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { eventBus } from "@/scripts/EventBus.js";
+
 export default {
   name: "SearchBox",
   props: {
@@ -40,14 +42,14 @@ export default {
       }, 700);
     },
     handleSearch() {
-      this.$emit("search", this.query);
+      eventBus.publish("search", this.query);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 #search {
   position: fixed;

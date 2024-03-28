@@ -59,6 +59,7 @@ const routes = [
       scrollbar: false,
     }
   },
+
   {
     path: '/projects',
     name: 'projects',
@@ -66,7 +67,39 @@ const routes = [
     meta: {
       scrollbar: true,
     }
-  }
+  },
+  {
+    path: '/project/:project_id',
+    name: 'project',
+    component: () => import('../views/ProjectView.vue'),
+    meta: {
+      scrollbar: true,
+    }
+  },
+  {
+    path: '/tasks',
+    name: 'tasks',
+    component: () => import('../views/TasksView.vue'),
+    meta: {
+      scrollbar: true,
+    }
+  },
+  {
+    path: '/options',
+    name: 'options',
+    component: () => import('../views/OptionsView.vue'),
+    meta: {
+      scrollbar: true,
+    }
+  },
+  {
+    path: '/workplace/:project_id/:branch_name',
+    name: 'workplace',
+    component: () => import('../views/WorkplaceView.vue'),
+    meta: {
+      scrollbar: false,
+    }
+  },
 ]
 
 const router = createRouter({

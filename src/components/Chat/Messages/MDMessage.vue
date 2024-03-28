@@ -1,7 +1,5 @@
 <template>
-  <element>
-    {{ message.content }}
-  </element>
+  <MdPreview id="'preview-only'" :model-value="message.content"></MdPreview>
 </template>
 
 <script>

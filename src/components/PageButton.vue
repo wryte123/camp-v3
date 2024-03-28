@@ -32,7 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 .colored {
   border-top: 3px solid theme-color(primary);
@@ -60,16 +60,16 @@ button {
   border-right: 3px solid theme-color(text);
 
   color: theme-color(text);
-  background-color: theme-color(background);
+  background-color: theme-color(white);
 
   text-align: center;
   text-decoration: none;
 
+  transition: background-color 0.2s, color 0.2s;
+
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
-
-  transition: all 0.3s ease;
 
   &:hover {
     background-color: theme-color(text);

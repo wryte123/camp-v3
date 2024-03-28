@@ -1,15 +1,16 @@
 <template>
   <main>
     <Bar />
-    <transition name="panel-transition"
-      ><MainPanel :class="{ expanded: isSubPanelExpanded }" />
-    </transition>
-
-    <transition name="panel-transition"
-      ><SubPanel
-        :class="{ expanded: isSubPanelExpanded }"
-        @toggle="toggleExpand"
-    /></transition>
+    <MainPanel
+      :class="{ expanded: isSubPanelExpanded, 'md-mode': isMDModeOn }"
+      :md="isMDModeOn"
+      @toggle="toggleExpand"
+      @mdtoggle="toggleMarkdownMode"
+    />
+    <SubPanel
+      :class="{ expanded: isSubPanelExpanded }"
+      @toggle="toggleExpand"
+    />
   </main>
 </template>
 
@@ -29,20 +30,31 @@ export default {
     return {
       isMainPanelExpanded: true,
       isSubPanelExpanded: false,
+      isMDModeOn: false,
     };
   },
 
   methods: {
     toggleExpand() {
+      if (this.isMDModeOn && this.isSubPanelExpanded) {
+        this.isMDModeOn = !this.isMDModeOn;
+      }
       this.isMainPanelExpanded = !this.isMainPanelExpanded;
       this.isSubPanelExpanded = !this.isSubPanelExpanded;
+    },
+    toggleMarkdownMode() {
+      if (!this.isMDModeOn && !this.isSubPanelExpanded) {
+        this.isMainPanelExpanded = !this.isMainPanelExpanded;
+        this.isSubPanelExpanded = !this.isSubPanelExpanded;
+      }
+      this.isMDModeOn = !this.isMDModeOn;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 main {
   height: 100vh;

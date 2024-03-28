@@ -2,7 +2,18 @@
   <element>
     <Bar follow />
     <section id="proj-main">
-      <p>Projects / project.name</p>
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <a @click="this.$router.push('/')">Campfire</a>
+        </el-breadcrumb-item>
+        <el-breadcrumb-item
+          ><a @click="this.$router.push('/projects')"
+            >项目</a
+          ></el-breadcrumb-item
+        ><el-breadcrumb>
+          {{ project.name }}
+        </el-breadcrumb>
+      </el-breadcrumb>
       <el-descriptions
         :title="project.name"
         :column="4"

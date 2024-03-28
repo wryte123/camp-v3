@@ -1,11 +1,11 @@
 <template>
-  <div class="about">
+  <main class="about">
     <Bar />
     <h1>This is an about page</h1>
     <div>
       <el-button @click="showMessage"> Click me </el-button>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -24,3 +24,13 @@ export default {
   },
 };
 </script>
+
+<style>
+main {
+  height: 100vh;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+</style>

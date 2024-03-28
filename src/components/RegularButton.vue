@@ -32,17 +32,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 .colored {
-  border-top: 3px solid theme-color(primary);
-  border-bottom: 3px solid theme-color(primary);
-  border-left: 3px solid theme-color(primary);
-  border-right: 3px solid theme-color(primary);
-  color: theme-color(primary);
+  border-top: 3px solid theme-color(theme);
+  border-bottom: 3px solid theme-color(theme);
+  border-left: 3px solid theme-color(theme);
+  border-right: 3px solid theme-color(theme);
+  background-color: theme-color(theme);
+  color: theme-color(white);
+
+  transition: border-color 0.1s, background-color 0.1s;
 
   &:hover {
-    background-color: theme-color(primary);
+    border-color: theme-color(theme-upper);
+    background-color: theme-color(theme-upper);
     color: #fff;
   }
 }
@@ -54,13 +58,13 @@ button {
   width: 80px;
 
   border-radius: 10px;
-  border-top: 3px solid theme-color(text);
-  border-bottom: 3px solid theme-color(text);
-  border-left: 3px solid theme-color(text);
-  border-right: 3px solid theme-color(text);
+  border-top: 2px solid theme-color(text);
+  border-bottom: 2px solid theme-color(text);
+  border-left: 2px solid theme-color(text);
+  border-right: 2px solid theme-color(text);
 
   color: theme-color(text);
-  background-color: theme-color(background);
+  background-color: theme-color(white);
 
   text-align: center;
   text-decoration: none;
@@ -68,8 +72,6 @@ button {
   display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
-
-  transition: all 0.3s ease;
 
   &:hover {
     background-color: theme-color(text);

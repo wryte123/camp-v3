@@ -3,7 +3,7 @@
     <h1>Project <span>Campfire</span></h1>
     <p>简便，易上手的项目版本控制及协作系统</p>
     <div>
-      <Button label="快速上手" colored />
+      <Button label="快速上手" />
       <Button label="开始使用" @clickEvent="this.$router.push('/login')" />
     </div>
   </element>
@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 element {
   height: 100%;
@@ -37,9 +37,9 @@ element {
   h1 {
     font-size: 64px;
 
-    // span {
-    //   color: theme-color(secondary);
-    // }
+    span {
+      color: theme-color(theme);
+    }
   }
 
   p {

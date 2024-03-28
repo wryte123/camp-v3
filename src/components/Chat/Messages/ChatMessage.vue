@@ -3,22 +3,14 @@
     <div v-if="message.userID === currentUserID" class="message-self">
       <div class="timestamp">message.timestamp</div>
       <div class="bubble">
-        <component
-          :is="messageComponent"
-          :message="message"
-          @rend="handleRend"
-        ></component>
+        <component :is="messageComponent" :message="message"></component>
       </div>
       <el-avatar :size="size" :src="circleUrl" />
     </div>
     <div v-else class="message-other">
       <el-avatar :size="size" :src="circleUrl" />
       <div class="bubble">
-        <component
-          :is="messageComponent"
-          :message="message"
-          @rend="handleRend"
-        ></component>
+        <component :is="messageComponent" :message="message"></component>
       </div>
       <div class="timestamp">message.timestamp</div>
     </div>
@@ -56,6 +48,7 @@ export default {
         task: defineAsyncComponent(() => import("./TaskMessage.vue")),
         anno: defineAsyncComponent(() => import("./AnnoMessage.vue")),
         doc: defineAsyncComponent(() => import("./DocMessage.vue")),
+        md: defineAsyncComponent(() => import("./MDMessage.vue")),
       };
       return typeMap[this.message.type] || this.defaultComponent;
     },
@@ -63,18 +56,11 @@ export default {
       return () => defineAsyncComponent(import("./DefaultMessage.vue"));
     },
   },
-
-  method: {
-    handleRend(payload) {
-      console.log(1);
-      this.$emit("rend", payload);
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 .message-self,
 .message-other {

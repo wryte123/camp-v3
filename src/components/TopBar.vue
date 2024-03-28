@@ -58,7 +58,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 #top-nav {
   display: grid;
@@ -71,6 +71,8 @@ export default {
   backdrop-filter: blur(10px);
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+
+  z-index: 990;
 }
 
 nav {
@@ -127,7 +129,7 @@ nav a.router-link-exact-active {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
-  z-index: 999; /* 确保遮罩位于最顶层 */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
 }
 </style>

@@ -4,7 +4,7 @@
       <el-icon id="enlarge" class="icon" @click="handleExpand"
         ><ArrowLeftBold
       /></el-icon>
-      <div id="title"><h2></h2></div>
+      <div></div>
       <el-icon
         v-show="!isDefault"
         id="back"
@@ -13,9 +13,8 @@
         ><CloseBold
       /></el-icon>
     </div>
-    <div v-loading="!isComponentLoaded" element-loading-background="white">
-      <component :is="subComponent" :data="payload"></component>
-    </div>
+    <el-skeleton v-if="!loaded" :rows="10" animated />
+    <component v-else :is="subComponent" :rendData="payload"></component>
   </element>
 </template>
 
@@ -29,14 +28,17 @@ export default {
       payload: {},
       isDefault: true,
       subComponent: null,
-      isComponentLoaded: false,
+      loaded: false,
     };
   },
 
   created() {
     eventBus.subscribe("rend", this.handleEvent);
   },
-  destroyed() {
+  mounted() {
+    this.loadComponent();
+  },
+  beforeDestroy() {
     eventBus.unsubscribe("rend", this.handleEvent);
   },
 
@@ -47,24 +49,37 @@ export default {
       this.loadComponent();
     },
     loadComponent() {
+      this.loaded = false;
       const typeMap = {
-        task: defineAsyncComponent(() => import("../Task/TaskPanel.vue")),
-        camp: defineAsyncComponent(() => import("../Camp/CampPanel.vue")),
+        task: defineAsyncComponent(() =>
+          import("@/components/Task/TaskPanel.vue")
+        ),
+        project: defineAsyncComponent(() =>
+          import("@/components/Project/ProjectPanel.vue")
+        ),
+        anno: defineAsyncComponent(() =>
+          import("@/components/Camp/AnnoPanel.vue")
+        ),
       };
-
-      this.subComponent.component.onMounted(() => {
-        this.isComponentLoaded = true;
-      });
-
       if (!typeMap[this.payload.type]) {
         this.defaultComponent();
+        return;
       }
       this.subComponent = typeMap[this.payload.type];
       this.isDefault = false;
+      this.loaded = true;
     },
     defaultComponent() {
-      this.subComponent = defineAsyncComponent(import("../Camp/CampPanel.vue"));
+      this.loaded = false;
+      this.subComponent = defineAsyncComponent(() =>
+        import("@/components/Camp/CampPanel.vue")
+      );
       this.isDefault = true;
+      this.loaded = true;
+    },
+    handleComponentMounted() {
+      console.log("handleComponentMounted");
+      this.isComponentLoaded = true;
     },
     handleExpand() {
       this.$emit("toggle");
@@ -81,10 +96,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 .expanded {
-  width: 50% !important;
+  width: 40% !important;
 }
 
 .expanded #enlarge {
@@ -93,18 +108,17 @@ export default {
 
 #sub-panel {
   width: 25%;
-  border-style: solid;
-  border-width: 1px;
-  border-color: theme-color(text);
+  border-left: 1px solid theme-color(border);
 
-  transition: width 0.2s;
+  transition: width 0.1s;
 
   #topbar {
-    height: 4%;
+    width: 100%;
+    height: 40px;
 
-    display: flex;
-
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 50px 8fr 50px;
+    grid-template-rows: auto;
 
     .icon {
       height: 100%;
@@ -116,7 +130,7 @@ export default {
 
     #title {
       height: 100%;
-      width: 100%;
+      width: 90%;
 
       background-color: rgba(255, 255, 255, 0);
       display: flex;

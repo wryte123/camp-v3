@@ -10,6 +10,7 @@
 
 <script>
 import RegularButton from "@/components/RegularButton.vue";
+import { eventBus } from "@/scripts/EventBus.js";
 
 export default {
   components: {
@@ -25,14 +26,14 @@ export default {
 
   methods: {
     subPanelRend() {
-      this.$emit("rend", this.message);
+      eventBus.publish("rend", this.message);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 #anno-msg {
   display: flex;
