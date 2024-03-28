@@ -12,9 +12,11 @@
     "core-js": "^3.8.3",
     "dayjs": "^1.11.10",
     "element-plus": "^2.6.1",
-    "md-editor-v3": "^4.12.1",
+    "md-editor-v3": "^4.12.2",
+    "sanitize-html": "^2.13.0",
     "sass": "^1.72.0",
     "sass-loader": "^14.1.1",
+    "si-grenoble": "^0.6.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },

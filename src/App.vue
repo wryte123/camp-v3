@@ -7,10 +7,11 @@
 <script setup></script>
 
 <style lang="scss">
-@import "@/styles/global.scss";
+@use "@/styles/global.scss" as *;
 
 body {
   margin: 0;
+  color: theme-color(text);
 }
 
 #app {
@@ -21,15 +22,20 @@ body {
 }
 
 .nav-icon {
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
 
-  border: 3px solid theme-color(text);
+  border: 2px solid theme-color(text);
   border-radius: 5px;
 
   &:hover {
     background-color: theme-color(grey);
   }
+}
+
+.panel-icon {
+  height: 30px;
+  width: 30px;
 }
 
 .tooltip {
@@ -44,10 +50,32 @@ body {
   white-space: nowrap;
   opacity: 1;
   pointer-events: none;
-  z-index: 999;
+  z-index: 996;
 }
 
 .loading {
-  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab {
+  margin-left: 150px;
+  width: 100%;
+}
+
+.file-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.hover-icon {
+  width: 30px;
+  height: 30px;
+
+  &:hover {
+    background-color: theme-color(grey);
+  }
 }
 </style>
