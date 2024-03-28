@@ -80,5 +80,7 @@ class Cache {
     }
 }
 
-const cacheInstance = Cache.getInstance();
-export default cacheInstance;
+
+export const cache = Cache.getInstance();
+
+
