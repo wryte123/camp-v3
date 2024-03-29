@@ -9,22 +9,46 @@
           <el-avatar :size="200" />
           <Button />
         </div>
-        <el-form :model="user" label-width="auto" id="user-info-form">
+        <el-form
+          id="user-info-form"
+          :model="user"
+          label-width="auto"
+        >
           <el-form-item label="用户名">
             <el-input v-model="user.name" />
           </el-form-item>
           <el-form-item label="性别">
-            <el-select v-model="user.sex" placeholder="选择性别">
-              <el-option label="男" value="male" />
-              <el-option label="女" value="famale" />
-              <el-option label="保密" value="unknown" />
+            <el-select
+              v-model="user.sex"
+              placeholder="选择性别"
+            >
+              <el-option
+                label="男"
+                value="male"
+              />
+              <el-option
+                label="女"
+                value="famale"
+              />
+              <el-option
+                label="保密"
+                value="unknown"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="个人介绍">
-            <el-input v-model="user.signature" type="textarea" />
+            <el-input
+              v-model="user.signature"
+              type="textarea"
+            />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">Create</el-button>
+            <el-button
+              type="primary"
+              @click="onSubmit"
+            >
+              Create
+            </el-button>
             <el-button>Cancel</el-button>
           </el-form-item>
         </el-form>
@@ -38,24 +62,42 @@
         label-width="auto"
         class="demo-ruleForm"
       >
-        <el-form-item label="Password" prop="pass">
-          <el-input v-model="user.pass" type="password" autocomplete="off" />
+        <el-form-item
+          label="Password"
+          prop="pass"
+        >
+          <el-input
+            v-model="user.pass"
+            type="password"
+            autocomplete="off"
+          />
         </el-form-item>
-        <el-form-item label="Confirm" prop="checkPass">
+        <el-form-item
+          label="Confirm"
+          prop="checkPass"
+        >
           <el-input
             v-model="user.checkPass"
             type="password"
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item label="Age" prop="age">
+        <el-form-item
+          label="Age"
+          prop="age"
+        >
           <el-input v-model.number="user.age" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm(ruleFormRef)"
-            >Submit</el-button
+          <el-button
+            type="primary"
+            @click="submitForm(ruleFormRef)"
           >
-          <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+            Submit
+          </el-button>
+          <el-button @click="resetForm(ruleFormRef)">
+            Reset
+          </el-button>
         </el-form-item>
       </el-form>
     </section>

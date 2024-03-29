@@ -6,9 +6,12 @@
     <small>task.status</small>
     <h2>详情</h2>
     <div id="content">
-      <MdPreview id="'preview-only'" model-value="task.content"
-        >task.content</MdPreview
+      <MdPreview
+        id="'preview-only'"
+        model-value="task.content"
       >
+        task.content
+      </MdPreview>
     </div>
   </element>
 </template>

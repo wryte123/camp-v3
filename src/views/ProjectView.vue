@@ -4,17 +4,19 @@
     <section id="proj-main">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <a @click="this.$router.push('/')">Campfire</a>
+          <a @click="$router.push('/')">Campfire</a>
         </el-breadcrumb-item>
-        <el-breadcrumb-item
-          ><a @click="this.$router.push('/projects')"
-            >项目</a
-          ></el-breadcrumb-item
-        >
+        <el-breadcrumb-item>
+          <a @click="$router.push('/projects')">项目</a>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>{{ project.title }}</el-breadcrumb-item>
       </el-breadcrumb>
       <h1>project.name</h1>
-      <el-descriptions :column="4" :direction="vertical" border>
+      <el-descriptions
+        :column="4"
+        :direction="vertical"
+        border
+      >
         <el-descriptions-item label="创建者">
           project.owner
         </el-descriptions-item>
@@ -25,14 +27,25 @@
           project.status
         </el-descriptions-item>
       </el-descriptions>
-      <el-descriptions :column="1" :direction="vertical" border>
-        <el-descriptions-item id="description" label="描述">
+      <el-descriptions
+        :column="1"
+        :direction="vertical"
+        border
+      >
+        <el-descriptions-item
+          id="description"
+          label="描述"
+        >
           project.description
         </el-descriptions-item>
       </el-descriptions>
       <h2>项目阶段</h2>
       <div class="project-part">
-        <el-steps :active="project.stage" finish-status="success" align-center>
+        <el-steps
+          :active="project.stage"
+          finish-status="success"
+          align-center
+        >
           <el-step title="设计" />
           <el-step title="开发阶段" />
           <el-step title="测试阶段" />
@@ -45,14 +58,17 @@
       <div class="project-part">
         <Branches />
       </div>
-      <el-divider></el-divider>
+      <el-divider />
       <h2>成员列表</h2>
       <div id="member-panel">
-        <MemberCard v-for="member in project.Members" :key="member.id" />
+        <MemberCard
+          v-for="member in project.Members"
+          :key="member.id"
+        />
       </div>
     </section>
     <aside id="proj-sub">
-      <p @click="this.$router.push(`/workplace/${project.id}/main`)">
+      <p @click="$router.push(`/workplace/${project.id}/main`)">
         <svg
           width="24"
           height="24"
@@ -64,10 +80,11 @@
             d="M27.2 6.28l-6.251 35.453M16.734 12.686L5.42 24l11.314 11.314M31.255 12.686L42.57 24 31.255 35.314"
             stroke="#4E5969"
             stroke-width="2"
-          /></svg
-        >源代码
+          /></svg>源代码
       </p>
-      <p @click="showCommitPanel">项目提交</p>
+      <p @click="showCommitPanel">
+        项目提交
+      </p>
 
       <p>任务</p>
       <p>项目文档</p>
@@ -93,17 +110,17 @@ export default {
     MemberCard,
   },
 
-  mounted() {
-    const id = this.$route.params.project_id;
-    this.fetchProjectData(id);
-  },
-
   data() {
     return {
       project: {
         id: 1,
       },
     };
+  },
+
+  mounted() {
+    const id = this.$route.params.project_id;
+    this.fetchProjectData(id);
   },
 
   methods: {

@@ -1,12 +1,18 @@
 <template>
   <element id="login-panel">
-    <div v-if="this.currentUser != null">
-      <Avatar></Avatar>
+    <div v-if="currentUser != null">
+      <Avatar />
       <p>user.name</p>
-      <Button label="登出" @click="logout" />
+      <Button
+        label="登出"
+        @click="logout"
+      />
     </div>
     <div v-else>
-      <Button label="登入" @click="this.$router.push('/login')" />
+      <Button
+        label="登入"
+        @click="$router.push('/login')"
+      />
     </div>
   </element>
 </template>

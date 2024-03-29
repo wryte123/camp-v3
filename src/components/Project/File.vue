@@ -1,7 +1,13 @@
 <template>
   <element class="file">
-    <Folder v-if="file.type === 'directory'" class="file-icon" />
-    <Document v-else-if="file.type === 'document'" class="file-icon" />
+    <Folder
+      v-if="file.type === 'directory'"
+      class="file-icon"
+    />
+    <Document
+      v-else-if="file.type === 'document'"
+      class="file-icon"
+    />
     {{ file.name }}
   </element>
 </template>

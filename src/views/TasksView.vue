@@ -2,16 +2,22 @@
   <main>
     <Bar follow />
     <el-tabs class="tab">
-      <el-tab-pane label="我的任务"
-        ><div id="task-main" :class="{ 'main-expanded': isSubPanelExpanded }">
+      <el-tab-pane label="我的任务">
+        <div
+          id="task-main"
+          :class="{ 'main-expanded': isSubPanelExpanded }"
+        >
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-              <a @click="this.$router.push('/')">Campfire</a>
+              <a @click="$router.push('/')">Campfire</a>
             </el-breadcrumb-item>
             <el-breadcrumb-item>我的任务</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="end">
-            <Button label="刷新" @click="tasksOfUser" />
+            <Button
+              label="刷新"
+              @click="tasksOfUser"
+            />
           </div>
           <el-collapse accordion>
             <el-collapse-item
@@ -34,18 +40,17 @@
           :class="{ expanded: isSubPanelExpanded }"
           :task="currentTask"
           @toggle="toggleExpand"
-      /></el-tab-pane>
+        />
+      </el-tab-pane>
       <el-tab-pane label="新建任务">
         <div id="task-main">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-              <a @click="this.$router.push('/')">Campfire</a>
+              <a @click="$router.push('/')">Campfire</a>
             </el-breadcrumb-item>
-            <el-breadcrumb-item
-              ><a @click="this.$router.push('/tasks')"
-                >项目</a
-              ></el-breadcrumb-item
-            >
+            <el-breadcrumb-item>
+              <a @click="$router.push('/tasks')">项目</a>
+            </el-breadcrumb-item>
             <el-breadcrumb-item>新建任务</el-breadcrumb-item>
           </el-breadcrumb>
           <h1>创建</h1>
@@ -75,14 +80,24 @@
             </el-form-item>
             <el-form-item label="类型">
               <el-radio-group v-model="taskToCreate.isFree">
-                <el-radio :value="false">指派式</el-radio>
-                <el-radio :value="true">自由式</el-radio>
+                <el-radio :value="false">
+                  指派式
+                </el-radio>
+                <el-radio :value="true">
+                  自由式
+                </el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="具体描述">
-              <el-input v-model="taskToCreate.content" type="textarea" />
+              <el-input
+                v-model="taskToCreate.content"
+                type="textarea"
+              />
             </el-form-item>
-            <Button label="提交" @click="createTask" />
+            <Button
+              label="提交"
+              @click="createTask"
+            />
           </el-form>
         </div>
       </el-tab-pane>

@@ -1,15 +1,26 @@
 <template>
-  <element id="search" @click.stop>
+  <element
+    id="search"
+    @click.stop
+  >
     <Search id="search-icon" />
     <input
-      type="text"
       v-model="query"
-      @input="handleInput"
+      type="text"
       :placeholder="placeholder"
-    />
-    <div v-if="showResults" class="search-results">
+      @input="handleInput"
+    >
+    <div
+      v-if="showResults"
+      class="search-results"
+    >
       <ul>
-        <li v-for="result in results" :key="result.id">{{ result.text }}</li>
+        <li
+          v-for="result in results"
+          :key="result.id"
+        >
+          {{ result.text }}
+        </li>
       </ul>
     </div>
   </element>

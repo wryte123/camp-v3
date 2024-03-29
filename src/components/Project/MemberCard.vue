@@ -1,12 +1,16 @@
 <template>
   <element id="member-card">
-    <el-avatar></el-avatar>
+    <el-avatar />
     <div>
       <h4>data.memberName</h4>
       <small>data.memberTitle</small>
     </div>
-    <el-icon @click="toMemberChat"><ChatLineSquare /></el-icon>
-    <el-icon @click="toMemberInfo"><More /></el-icon>
+    <el-icon @click="toMemberChat">
+      <ChatLineSquare />
+    </el-icon>
+    <el-icon @click="toMemberInfo">
+      <More />
+    </el-icon>
   </element>
 </template>
 

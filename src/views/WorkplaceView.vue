@@ -4,18 +4,20 @@
     <section id="workplace-main">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <a @click="this.$router.push('/')">Campfire</a>
+          <a @click="$router.push('/')">Campfire</a>
         </el-breadcrumb-item>
-        <el-breadcrumb-item
-          ><a @click="this.$router.push('/projects')"
-            >项目</a
-          ></el-breadcrumb-item
-        >
+        <el-breadcrumb-item>
+          <a @click="$router.push('/projects')">项目</a>
+        </el-breadcrumb-item>
         <el-breadcrumb-item>Workplace</el-breadcrumb-item>
       </el-breadcrumb>
       <div id="file-area">
         <div>
-          <svg class="hover-icon" viewBox="0 0 48 48" fill="none">
+          <svg
+            class="hover-icon"
+            viewBox="0 0 48 48"
+            fill="none"
+          >
             <path
               stroke="#4E5969"
               stroke-width="2"
@@ -24,7 +26,11 @@
               d="M7 7h13v13H7zM28 7h13v13H28zM7 28h13v13H7zM28 28h13v13H28z"
             />
           </svg>
-          <svg class="hover-icon" viewBox="0 0 48 48" fill="none">
+          <svg
+            class="hover-icon"
+            viewBox="0 0 48 48"
+            fill="none"
+          >
             <path
               d="M13 24h30M5 12h4m4 24h30M13 12h30M5 24h4M5 36h4"
               stroke="#4E5969"
@@ -32,7 +38,10 @@
             />
           </svg>
         </div>
-        <div v-if="isGrid" id="file-grid">
+        <div
+          v-if="isGrid"
+          id="file-grid"
+        >
           <GridFile
             v-for="(file, index) in directory.files"
             :key="index"
@@ -40,7 +49,10 @@
             @click="enterFile(file)"
           />
         </div>
-        <div v-else id="file-list">
+        <div
+          v-else
+          id="file-list"
+        >
           <File
             v-for="(file, index) in directory.files"
             :key="index"

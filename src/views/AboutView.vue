@@ -3,7 +3,9 @@
     <Bar />
     <h1>This is an about page</h1>
     <div>
-      <el-button @click="showMessage"> Click me </el-button>
+      <el-button @click="showMessage">
+        Click me
+      </el-button>
     </div>
   </main>
 </template>

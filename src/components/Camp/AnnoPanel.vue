@@ -3,7 +3,9 @@
     <h2>rendData.title</h2>
     <p>发布于rendData.begin</p>
     <p>由rendData.owner发布</p>
-    <div id="anno-content">rendData.content</div>
+    <div id="anno-content">
+      rendData.content
+    </div>
   </element>
 </template>
 

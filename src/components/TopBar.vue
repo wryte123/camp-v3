@@ -1,19 +1,35 @@
 <template>
-  <element id="top-nav" :class="{ follow: isFollow }">
+  <element
+    id="top-nav"
+    :class="{ follow: isFollow }"
+  >
     <div>
-      <h1 @click="this.$router.push('/')">Campfire</h1>
+      <h1 @click="$router.push('/')">
+        Campfire
+      </h1>
     </div>
-    <div id="search-trigger" @click="toggleSearch">
+    <div
+      id="search-trigger"
+      @click="toggleSearch"
+    >
       <Search id="search-trigger-icon" />
       <h4>搜索...</h4>
     </div>
     <nav>
-      <p @click="this.$router.push('/about')">关于</p>
-      <p @click="this.$router.push('/chat')">主面板</p>
+      <p @click="$router.push('/about')">
+        关于
+      </p>
+      <p @click="$router.push('/chat')">
+        主面板
+      </p>
     </nav>
     <UserLogin />
-    <div class="overlay" v-if="showSearch" @click="toggleSearch">
-      <component :is="showSearch ? 'Explorer' : ''"></component>
+    <div
+      v-if="showSearch"
+      class="overlay"
+      @click="toggleSearch"
+    >
+      <component :is="showSearch ? 'Explorer' : ''" />
     </div>
   </element>
 </template>

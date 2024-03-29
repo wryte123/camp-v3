@@ -1,5 +1,8 @@
 <template>
-  <aside class="sidebar" :class="{ follow: isFollow }">
+  <aside
+    class="sidebar"
+    :class="{ follow: isFollow }"
+  >
     <div>
       <el-avatar class="avatar nav-icon" />
     </div>
@@ -11,8 +14,13 @@
           @mouseleave="hideTooltip('home')"
         />
         <transition name="fade">
-          <div v-if="tooltip === 'home'" class="tooltip">主页</div></transition
-        >
+          <div
+            v-if="tooltip === 'home'"
+            class="tooltip"
+          >
+            主页
+          </div>
+        </transition>
       </router-link>
       <router-link to="/chat">
         <ChatLineSquare
@@ -20,8 +28,13 @@
           @mouseover="showTooltip('chat')"
           @mouseleave="hideTooltip('chat')"
         /><transition name="fade">
-          <div v-if="tooltip === 'chat'" class="tooltip">聊天</div></transition
-        >
+          <div
+            v-if="tooltip === 'chat'"
+            class="tooltip"
+          >
+            聊天
+          </div>
+        </transition>
       </router-link>
 
       <router-link to="/projects">
@@ -30,8 +43,13 @@
           @mouseover="showTooltip('proj')"
           @mouseleave="hideTooltip('proj')"
         /><transition name="fade">
-          <div v-if="tooltip === 'proj'" class="tooltip">项目</div></transition
-        >
+          <div
+            v-if="tooltip === 'proj'"
+            class="tooltip"
+          >
+            项目
+          </div>
+        </transition>
       </router-link>
       <router-link to="/tasks">
         <DocumentChecked
@@ -39,8 +57,13 @@
           @mouseover="showTooltip('task')"
           @mouseleave="hideTooltip('task')"
         /><transition name="fade">
-          <div v-if="tooltip === 'task'" class="tooltip">任务</div></transition
-        >
+          <div
+            v-if="tooltip === 'task'"
+            class="tooltip"
+          >
+            任务
+          </div>
+        </transition>
       </router-link>
     </div>
     <router-link to="/options">
@@ -49,8 +72,13 @@
         @mouseover="showTooltip('opt')"
         @mouseleave="hideTooltip('opt')"
       /><transition name="fade">
-        <div v-if="tooltip === 'opt'" class="tooltip">设置</div></transition
-      >
+        <div
+          v-if="tooltip === 'opt'"
+          class="tooltip"
+        >
+          设置
+        </div>
+      </transition>
     </router-link>
   </aside>
 </template>

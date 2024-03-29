@@ -1,5 +1,8 @@
 <template>
-  <MdPreview id="'preview-only'" :model-value="message.content"></MdPreview>
+  <MdPreview
+    id="'preview-only'"
+    :model-value="message.content"
+  />
 </template>
 
 <script>

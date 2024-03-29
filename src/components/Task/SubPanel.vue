@@ -1,19 +1,31 @@
 <template>
   <element id="sub-panel">
     <div id="topbar">
-      <el-icon id="enlarge" class="icon" @click="handleExpand"
-        ><ArrowLeftBold
-      /></el-icon>
-      <div id="title"><h2>任务详情</h2></div>
+      <el-icon
+        id="enlarge"
+        class="icon"
+        @click="handleExpand"
+      >
+        <ArrowLeftBold />
+      </el-icon>
+      <div id="title">
+        <h2>任务详情</h2>
+      </div>
       <el-icon
         v-show="!isDefault"
         id="back"
         class="icon"
         @click="defaultComponent"
-        ><CloseBold
-      /></el-icon>
+      >
+        <CloseBold />
+      </el-icon>
     </div>
-    <div v-if="task == null" class="loading">暂无内容</div>
+    <div
+      v-if="task == null"
+      class="loading"
+    >
+      暂无内容
+    </div>
     <div v-else>
       <TaskPanel :task="task" />
     </div>

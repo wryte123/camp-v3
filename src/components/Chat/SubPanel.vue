@@ -1,20 +1,33 @@
 <template>
   <element id="sub-panel">
     <div id="topbar">
-      <el-icon id="enlarge" class="icon" @click="handleExpand"
-        ><ArrowLeftBold
-      /></el-icon>
-      <div></div>
+      <el-icon
+        id="enlarge"
+        class="icon"
+        @click="handleExpand"
+      >
+        <ArrowLeftBold />
+      </el-icon>
+      <div />
       <el-icon
         v-show="!isDefault"
         id="back"
         class="icon"
         @click="defaultComponent"
-        ><CloseBold
-      /></el-icon>
+      >
+        <CloseBold />
+      </el-icon>
     </div>
-    <el-skeleton v-if="!loaded" :rows="10" animated />
-    <component v-else :is="subComponent" :rendData="payload"></component>
+    <el-skeleton
+      v-if="!loaded"
+      :rows="10"
+      animated
+    />
+    <component
+      :is="subComponent"
+      v-else
+      :rend-data="payload"
+    />
   </element>
 </template>
 

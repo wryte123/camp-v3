@@ -2,67 +2,75 @@
   <main>
     <Bar follow />
     <el-tabs class="tab">
-      <el-tab-pane label="项目"
-        ><section id="projects-main">
+      <el-tab-pane label="项目">
+        <section id="projects-main">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-              <a @click="this.$router.push('/')">Campfire</a>
+              <a @click="$router.push('/')">Campfire</a>
             </el-breadcrumb-item>
-            <el-breadcrumb-item
-              ><a @click="this.$router.push('/projects')"
-                >项目</a
-              ></el-breadcrumb-item
-            >
+            <el-breadcrumb-item>
+              <a @click="$router.push('/projects')">项目</a>
+            </el-breadcrumb-item>
           </el-breadcrumb>
           <div class="end">
-            <Button label="刷新" @click="projectsOfUser" />
+            <Button
+              label="刷新"
+              @click="projectsOfUser"
+            />
           </div>
           <div id="projects">
             <div
               v-for="project in projects"
               :key="project.id"
               class="project-item"
-              @click="this.$router.push(`/project/${project.id}`)"
+              @click="$router.push(`/project/${project.id}`)"
             >
               <div class="item-start">
                 <h2>project.title</h2>
                 project.memberCount
               </div>
-              <div></div>
-              <div class="item-end">project.owner</div>
+              <div />
+              <div class="item-end">
+                project.owner
+              </div>
             </div>
           </div>
-        </section></el-tab-pane
-      >
+        </section>
+      </el-tab-pane>
       <el-tab-pane label="新建">
         <section id="project-create">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-              <a @click="this.$router.push('/')">Campfire</a>
+              <a @click="$router.push('/')">Campfire</a>
             </el-breadcrumb-item>
-            <el-breadcrumb-item
-              ><a @click="this.$router.push('/projects')"
-                >项目</a
-              ></el-breadcrumb-item
-            >
+            <el-breadcrumb-item>
+              <a @click="$router.push('/projects')">项目</a>
+            </el-breadcrumb-item>
             <el-breadcrumb-item>新建项目</el-breadcrumb-item>
           </el-breadcrumb>
           <el-form
+            id="project-form"
             :model="projectToCreate"
             label-width="auto"
-            id="project-form"
           >
             <el-form-item label="项目名称">
               <el-input v-model="projectToCreate.name" />
             </el-form-item>
             <el-form-item label="简介">
-              <el-input v-model="projectToCreate.description" type="textarea" />
+              <el-input
+                v-model="projectToCreate.description"
+                type="textarea"
+              />
             </el-form-item>
             <el-form-item>
-              <Button label="创建" @click="onSubmit" />
+              <Button
+                label="创建"
+                @click="onSubmit"
+              />
             </el-form-item>
-          </el-form></section
-      ></el-tab-pane>
+          </el-form>
+        </section>
+      </el-tab-pane>
     </el-tabs>
   </main>
 </template>

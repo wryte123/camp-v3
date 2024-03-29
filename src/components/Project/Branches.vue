@@ -1,7 +1,11 @@
 <template>
   <el-scrollbar style="height: 300px; width: 80%">
     <element id="branches">
-      <div v-for="branch in branches" :key="branch.id" class="branch">
+      <div
+        v-for="branch in branches"
+        :key="branch.id"
+        class="branch"
+      >
         <svg
           width="24"
           height="24"
@@ -16,7 +20,9 @@
           />
         </svg>
         <h3>{{ branch.name }}</h3>
-        <div v-show="branch.isMain">主要</div>
+        <div v-show="branch.isMain">
+          主要
+        </div>
         <small>最后更新于{{ branch.begin }}</small>
       </div>
     </element>

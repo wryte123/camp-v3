@@ -4,7 +4,7 @@
       <h1>rendData.name</h1>
       <small>成员人数rendData.memberCount人</small>
       <small>创建于rendData.begin</small>
-      <el-divider></el-divider>
+      <el-divider />
       <div id="camp-opts">
         <div><CirclePlus class="panel-icon" />邀请</div>
         <div><Tickets class="panel-icon" />公告</div>

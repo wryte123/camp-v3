@@ -1,7 +1,7 @@
 <template>
   <element>
-    <div id="add-controll"></div>
-    <div id="add-panel"></div>
+    <div id="add-controll" />
+    <div id="add-panel" />
   </element>
 </template>
 

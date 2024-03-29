@@ -1,9 +1,10 @@
 <template>
   <element id="member-card">
-    <el-avatar @click="toMemberInfo"
-      ><img
+    <el-avatar @click="toMemberInfo">
+      <img
         src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-    /></el-avatar>
+      >
+    </el-avatar>
     <div>
       <h4>data.memberName</h4>
       <small>data.memberTitle</small>

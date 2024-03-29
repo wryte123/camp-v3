@@ -2,7 +2,7 @@
   <main id="login-wrapper">
     <section id="login-main">
       <div id="login-view">
-        <img src="@/assets/login_view.jpg" />
+        <img src="@/assets/login_view.jpg">
       </div>
       <div id="login-panel">
         <el-tabs>
@@ -13,10 +13,21 @@
               :model="loginForm"
               :rules="loginRules"
             >
-              <el-form-item label="账号" size="large" prop="email">
-                <el-input v-model="loginForm.email" placeholder="输入邮箱..." />
+              <el-form-item
+                label="账号"
+                size="large"
+                prop="email"
+              >
+                <el-input
+                  v-model="loginForm.email"
+                  placeholder="输入邮箱..."
+                />
               </el-form-item>
-              <el-form-item label="密码" size="large" prop="password">
+              <el-form-item
+                label="密码"
+                size="large"
+                prop="password"
+              >
                 <el-input
                   v-model="loginForm.password"
                   placeholder="输入密码..."
@@ -26,7 +37,11 @@
                 />
               </el-form-item>
               <el-form-item>
-                <Button label="登录" @click="handleLogin" colored />
+                <Button
+                  label="登录"
+                  colored
+                  @click="handleLogin"
+                />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -37,19 +52,31 @@
               :model="registerForm"
               :rules="registerRules"
             >
-              <el-form-item label="邮箱" size="large" prop="email">
+              <el-form-item
+                label="邮箱"
+                size="large"
+                prop="email"
+              >
                 <el-input
                   v-model="registerForm.email"
                   placeholder="输入邮箱..."
                 />
               </el-form-item>
-              <el-form-item label="昵称" size="large" prop="username">
+              <el-form-item
+                label="昵称"
+                size="large"
+                prop="username"
+              >
                 <el-input
                   v-model="registerForm.username"
                   placeholder="输入昵称..."
                 />
               </el-form-item>
-              <el-form-item label="密码" size="large" prop="password">
+              <el-form-item
+                label="密码"
+                size="large"
+                prop="password"
+              >
                 <el-input
                   v-model="registerForm.password"
                   placeholder="输入密码..."
@@ -72,7 +99,11 @@
                 />
               </el-form-item>
               <el-form-item>
-                <Button label="注册" @click="handleRegister" colored />
+                <Button
+                  label="注册"
+                  colored
+                  @click="handleRegister"
+                />
               </el-form-item>
             </el-form>
           </el-tab-pane>

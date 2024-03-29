@@ -4,13 +4,11 @@
     <section id="proj-main">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <a @click="this.$router.push('/')">Campfire</a>
+          <a @click="$router.push('/')">Campfire</a>
         </el-breadcrumb-item>
-        <el-breadcrumb-item
-          ><a @click="this.$router.push('/projects')"
-            >项目</a
-          ></el-breadcrumb-item
-        ><el-breadcrumb>
+        <el-breadcrumb-item>
+          <a @click="$router.push('/projects')">项目</a>
+        </el-breadcrumb-item><el-breadcrumb>
           {{ project.name }}
         </el-breadcrumb>
       </el-breadcrumb>

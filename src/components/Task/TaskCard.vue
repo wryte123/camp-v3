@@ -1,6 +1,6 @@
 <template>
   <element class="task-card">
-    <div id="task-bar"></div>
+    <div id="task-bar" />
     <div id="task-info">
       <h3>task.title</h3>
       <p>截止于task.end前</p>

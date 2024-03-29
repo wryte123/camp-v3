@@ -1,5 +1,8 @@
 <template>
-  <button :class="{ colored: isColored }" @click="handleClick">
+  <button
+    :class="{ colored: isColored }"
+    @click="handleClick"
+  >
     {{ label }}
   </button>
 </template>
