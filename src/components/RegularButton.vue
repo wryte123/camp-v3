@@ -1,8 +1,5 @@
 <template>
-  <button
-    :class="{ colored: isColored }"
-    @click="handleClick"
-  >
+  <button :class="({ colored: isColored }, { dangerous: isDangerous })">
     {{ label }}
   </button>
 </template>
@@ -19,16 +16,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    dangerous: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
     isColored() {
       return this.colored;
     },
-  },
-  methods: {
-    handleClick(event) {
-      this.$emit("click", event);
+    isDangerous() {
+      return this.dangerous;
     },
   },
 };
@@ -54,11 +53,28 @@ export default {
   }
 }
 
+.dangerous {
+  border-top: 3px solid theme-color(red);
+  border-bottom: 3px solid theme-color(red);
+  border-left: 3px solid theme-color(red);
+  border-right: 3px solid theme-color(red);
+  background-color: theme-color(red);
+  color: theme-color(white);
+
+  transition: border-color 0.1s, background-color 0.1s;
+
+  &:hover {
+    border-color: theme-color(theme-upper);
+    background-color: theme-color(theme-upper);
+    color: #fff;
+  }
+}
+
 button {
   height: 40px;
   padding: 3px 10px;
   font-size: 16px;
-  width: 80px;
+  width: 100px;
 
   border-radius: 10px;
   border-top: 2px solid theme-color(text);

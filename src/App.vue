@@ -61,7 +61,7 @@ body {
 }
 
 .tab {
-  margin-left: 150px;
+  margin-left: 30px;
   width: 100%;
 }
 
@@ -73,6 +73,8 @@ body {
 .hover-icon {
   width: 30px;
   height: 30px;
+
+  cursor: pointer;
 
   &:hover {
     background-color: theme-color(grey);

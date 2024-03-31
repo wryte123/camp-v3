@@ -166,19 +166,17 @@ export default {
       console.log(user);
       LoginAPI.login(user)
         .then((response) => {
-          if (response.config.method !== "options") {
-            localStorage.setItem("token", response.id);
-            localStorage.setItem("userId", response.token);
-            userInit(
-              response.id,
-              response.name,
-              response.avatarUrl,
-              response.token
-            );
-            ElMessage.success("登录成功");
-            console.log(response);
-            this.$router.push("/chat");
-          }
+          localStorage.setItem("token", response.data.id);
+          localStorage.setItem("userId", response.data.token);
+          userInit(
+            response.data.id,
+            response.data.name,
+            response.data.avatarUrl,
+            response.data.token
+          );
+          ElMessage.success("登录成功");
+          console.log(response);
+          this.$router.push("/chat");
         })
         .catch((error) => {
           ElMessage.error("登录失败，请检查电子邮箱和密码");
@@ -187,21 +185,20 @@ export default {
     },
 
     handleRegister() {
-      try {
-        const user = this.registerForm;
-        console.log(user);
-        const response = LoginAPI.register(user);
-        user.id = response.id;
-        ElMessage.success("注册成功");
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-        if (error.response.status == 400) {
-          ElMessage.error("注册失败，请检查电子邮箱和密码");
-        } else {
-          ElMessage.error("服务器错误");
-        }
-      }
+      const user = this.registerForm;
+      console.log(user);
+      LoginAPI.register(user)
+        .then((response) => {
+          ElMessage.success("注册成功");
+          console.log(response);
+        })
+        .catch((error) => {
+          if (error.code == 400) {
+            ElMessage.error("注册失败，请检查电子邮箱和密码");
+          } else {
+            ElMessage.error("服务器错误");
+          }
+        });
     },
 
     validatePasswordConfirm(rule, value, callback) {

@@ -4,9 +4,29 @@
     :class="{ follow: isFollow }"
   >
     <div>
-      <el-avatar class="avatar nav-icon" />
+      <Avatar user="me" class="avatar" />
     </div>
-    <div>
+    <div class="sidebar-panel">
+      <div>
+        <Search
+          class="nav-icon"
+          @click="this.showSearch = !this.showSearch"
+          @mouseover="showTooltip('search')"
+          @mouseleave="hideTooltip('search')"
+        />
+        <transition name="fade">
+          <div v-if="tooltip === 'search'" class="tooltip">
+            搜索
+          </div></transition
+        >
+        <div
+          class="overlay"
+          v-if="showSearch"
+          @click="this.showSearch = !this.showSearch"
+        >
+          <component :is="showSearch ? 'Explorer' : ''"></component>
+        </div>
+      </div>
       <router-link to="/">
         <HomeFilled
           class="nav-icon"
@@ -84,7 +104,16 @@
 </template>
 
 <script>
+import Explorer from "@/components/Explorer.vue";
+import Avatar from "@/components/Avatar.vue";
+import { FileAPI } from "@/scripts/api";
+
 export default {
+  components: {
+    Explorer,
+    Avatar,
+  },
+
   props: {
     follow: {
       type: Boolean,
@@ -95,12 +124,17 @@ export default {
   data() {
     return {
       tooltip: null,
+      showSearch: false,
     };
   },
 
   computed: {
     isFollow() {
       return this.follow;
+    },
+
+    myAvatar() {
+      return FileAPI.getMyAvatar();
     },
   },
   methods: {
@@ -119,7 +153,7 @@ export default {
 
 .sidebar {
   position: relative;
-  height: 100%;
+  height: 100vh;
   width: 100px;
   min-width: 100px;
 
@@ -133,11 +167,16 @@ export default {
   grid-template-rows: 1fr 8fr 1fr;
 
   z-index: 990;
+
+  .sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .sidebar a {
   display: block;
-  margin-bottom: 10px;
   font-weight: bold;
   color: theme-color(text);
   text-decoration: none;
@@ -155,7 +194,8 @@ export default {
   position: fixed;
 }
 
-router-link {
+router-link,
+.search {
   position: relative;
   display: inline-block;
 }
@@ -166,7 +206,21 @@ router-link {
 }
 
 .fade-enter-from,
-.fade-leave-to {
+S .fade-leave-to {
   opacity: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+.avatar {
+  border: 2px solid theme-color(text);
 }
 </style>

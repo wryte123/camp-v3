@@ -1,11 +1,7 @@
 <template>
   <element id="sub-panel">
     <div id="topbar">
-      <el-icon
-        id="enlarge"
-        class="icon"
-        @click="handleExpand"
-      >
+      <el-icon id="enlarge" class="icon" @click="handleExpand">
         <ArrowLeftBold />
       </el-icon>
       <div id="title">
@@ -20,20 +16,22 @@
         <CloseBold />
       </el-icon>
     </div>
-    <div
-      v-if="task == null"
-      class="loading"
-    >
-      暂无内容
-    </div>
+    <div v-if="task == null" class="loading">暂无内容</div>
+    <div v-if="!isActivated" class="loading">暂无内容</div>
     <div v-else>
-      <TaskPanel :task="task" />
+      <TaskPanel :rendData="task" />
     </div>
   </element>
 </template>
 
 <script>
+import TaskPanel from "./TaskPanel.vue";
+
 export default {
+  components: {
+    TaskPanel,
+  },
+
   props: {
     task: {
       type: Object,
@@ -46,12 +44,14 @@ export default {
       payload: {},
       isDefault: true,
       subComponent: null,
+      isActivated: false,
     };
   },
 
   methods: {
     handleExpand() {
       this.$emit("toggle");
+      this.isActivated = !this.isActivated;
     },
   },
 };
@@ -73,10 +73,10 @@ export default {
   position: fixed;
 
   width: 30%;
-  height: 100%;
+  height: 100vh;
   right: -28%;
   top: 0%;
-  border-left: 1px solid theme-color(text);
+  border-left: 1px solid theme-color(border);
   background-color: theme-color(white);
 
   transition: right 0.2s;

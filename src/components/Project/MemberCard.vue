@@ -2,15 +2,10 @@
   <element id="member-card">
     <el-avatar />
     <div>
-      <h4>data.memberName</h4>
-      <small>data.memberTitle</small>
+      <h4>{{ data.user.username }}</h4>
+      <small>{{ data.title }}</small>
     </div>
-    <el-icon @click="toMemberChat">
-      <ChatLineSquare />
-    </el-icon>
-    <el-icon @click="toMemberInfo">
-      <More />
-    </el-icon>
+    <el-icon @click="toMemberInfo"><More /></el-icon>
   </element>
 </template>
 
@@ -26,8 +21,6 @@ export default {
   },
 
   method: {
-    toMemberChat() {},
-
     toMemberInfo() {},
   },
 };

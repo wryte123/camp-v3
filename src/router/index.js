@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { CurrentUser } from '@/scripts/session.js';
 
 const routes = [
   {
@@ -8,6 +9,7 @@ const routes = [
     component: HomeView,
     meta: {
       scrollbar: true,
+      requiresAuth: false,
     }
   },
   {
@@ -20,6 +22,7 @@ const routes = [
     ,
     meta: {
       scrollbar: false,
+      requiresAuth: false,
     }
   },
 
@@ -30,6 +33,7 @@ const routes = [
     ,
     meta: {
       scrollbar: false,
+      requiresAuth: true,
     }
   },
   {
@@ -39,6 +43,7 @@ const routes = [
     ,
     meta: {
       scrollbar: false,
+      requiresAuth: false,
     }
   },
   {
@@ -48,24 +53,16 @@ const routes = [
     ,
     meta: {
       scrollbar: false,
+      requiresAuth: false,
     }
   },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: () => import(/* webpackChunkName: "profile" */ '../views/ProfileView.vue')
-    ,
-    meta: {
-      scrollbar: false,
-    }
-  },
-
   {
     path: '/projects',
     name: 'projects',
     component: () => import('../views/ProjectsView.vue'),
     meta: {
       scrollbar: true,
+      requiresAuth: true,
     }
   },
   {
@@ -74,6 +71,7 @@ const routes = [
     component: () => import('../views/ProjectView.vue'),
     meta: {
       scrollbar: true,
+      requiresAuth: true,
     }
   },
   {
@@ -82,6 +80,7 @@ const routes = [
     component: () => import('../views/TasksView.vue'),
     meta: {
       scrollbar: true,
+      requiresAuth: true,
     }
   },
   {
@@ -90,6 +89,7 @@ const routes = [
     component: () => import('../views/OptionsView.vue'),
     meta: {
       scrollbar: true,
+      requiresAuth: true,
     }
   },
   {
@@ -98,6 +98,7 @@ const routes = [
     component: () => import('../views/WorkplaceView.vue'),
     meta: {
       scrollbar: false,
+      requiresAuth: true,
     }
   },
 ]
@@ -108,6 +109,18 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!CurrentUser.logined) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
   const scrollbar = to.meta.scrollbar;
   if (scrollbar) {
     document.body.style.overflow = '';

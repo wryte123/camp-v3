@@ -1,7 +1,7 @@
 <template>
   <main>
     <Bar />
-    <section id="workplace-main">
+    <section id="workplace-main" v-loading="!isLoaded">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
           <a @click="$router.push('/')">Campfire</a>
@@ -66,9 +66,11 @@
 </template>
 
 <script>
+import { GitAPI } from "@/scripts/api.js";
 import File from "@/components/Project/File.vue";
 import GridFile from "@/components/Project/GridFile.vue";
 import SideBar from "@/components/SideBar.vue";
+import { ElMessage } from "element-plus";
 
 export default {
   components: {
@@ -79,19 +81,31 @@ export default {
 
   data() {
     return {
-      isViewLoaded: false,
+      isLoaded: false,
       isGrid: false,
-      workplace: {},
-      directory: {
-        name: "campfire",
-        projectid: 1,
-
-        files: [
-          { name: "project.go", type: "document" },
-          { name: "test", type: "directory" },
-        ],
-      },
+      directory: {},
+      currentID: this.$route.params.project_id,
+      currentBranch: "main",
     };
+  },
+
+  mounted() {
+    this.dir("/");
+  },
+
+  methods: {
+    dir(path) {
+      GitAPI.dir(this.currentID, this.currentBranch, path)
+        .then((response) => {
+          this.directory = response.data;
+          this.isLoaded = true;
+          console.log(response.data);
+        })
+        .catch(() => {
+          ElMessage.error("获取工作区失败");
+          this.$router.back();
+        });
+    },
   },
 };
 </script>

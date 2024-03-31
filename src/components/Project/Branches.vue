@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar style="height: 300px; width: 80%">
+  <el-scrollbar style="height: 300px; width: 100%">
     <element id="branches">
       <div
         v-for="branch in branches"
@@ -59,9 +59,6 @@ export default {
   box-sizing: border-box;
   padding: 10px;
 
-  border: 1px solid;
-  border-radius: 10px;
-
   * {
     margin: 0;
   }
@@ -78,13 +75,13 @@ export default {
   padding: 2px 10px;
   gap: 10px;
 
-  border: 1px solid;
+  border: 1px solid theme-color(border);
   border-radius: 10px;
 
-  transition: background-color 0.1s;
+  transition: background-color 0.1s, box-shadow 0.1s;
 
   &:hover {
-    background-color: theme-color(grey);
+    box-shadow: 3px 3px 5px 1px theme-color(border);
   }
 }
 </style>

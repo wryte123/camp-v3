@@ -1,40 +1,19 @@
 <template>
   <element>
-    <div
-      v-if="message.userID === currentUserID"
-      class="message-self"
-    >
-      <div class="timestamp">
-        message.timestamp
-      </div>
+    <div v-if="message.userID === currentUserID" class="message-self">
+      <div class="timestamp">{{ message.timestamp }}</div>
       <div class="bubble">
-        <component
-          :is="messageComponent"
-          :message="message"
-        />
+        <component :is="messageComponent" :message="message" />
       </div>
-      <el-avatar
-        :size="size"
-        :src="circleUrl"
-      />
+      <el-avatar :size="size" :src="circleUrl" />
     </div>
-    <div
-      v-else
-      class="message-other"
-    >
-      <el-avatar
-        :size="size"
-        :src="circleUrl"
-      />
+    <div v-else class="message-other">
+      <el-avatar :size="size" :src="circleUrl" />
       <div class="bubble">
-        <component
-          :is="messageComponent"
-          :message="message"
-        />
+        <component :is="messageComponent" :message="message" />
       </div>
-      <div class="timestamp">
-        message.timestamp
-      </div>
+      <div class="timestamp">message.timestamp</div>
+      <div class="timestamp">{{ message.timestamp }}</div>
     </div>
   </element>
 </template>

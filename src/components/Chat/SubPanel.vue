@@ -90,10 +90,6 @@ export default {
       this.isDefault = true;
       this.loaded = true;
     },
-    handleComponentMounted() {
-      console.log("handleComponentMounted");
-      this.isComponentLoaded = true;
-    },
     handleExpand() {
       this.$emit("toggle");
     },

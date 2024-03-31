@@ -10,8 +10,6 @@
         <div><Tickets class="panel-icon" />公告</div>
         <div><Edit class="panel-icon" />编辑</div>
         <div><Search class="panel-icon" />搜索</div>
-      </div>
-      <div id="camp-opts">
         <div><Files class="panel-icon" />项目信息</div>
         <div><DocumentChecked class="panel-icon" />任务一览</div>
         <div><FolderOpened class="panel-icon" />源代码</div>
@@ -93,8 +91,9 @@ export default {
     }
 
     #camp-opts {
-      display: flex;
-      flex-direction: row;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 
       div {
         height: 60px;
@@ -102,6 +101,9 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        cursor: pointer;
+        border-radius: 8px;
 
         &:hover {
           background-color: theme-color(grey);

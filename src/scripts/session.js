@@ -1,49 +1,69 @@
 import { eventBus } from './EventBus.js';
+import { reactive } from "vue";
 
-export class SessionBag {
-    constructor(eType, data) {
-        this.timestamp = Date.now();
-        this.userID = CurrentUser.id;
-        this.eType = eType;
-        this.token = CurrentUser.token;
-        this.data = data;
-    }
+const saveUserInfoToLocal = (userInfo) => {
+    localStorage.setItem("currentUser", JSON.stringify(userInfo));
 }
 
-export const CurrentUser = {
+const restoreUserInfoFromLocal = () => {
+    const userInfoString = localStorage.getItem("currentUser");
+    if (userInfoString) {
+        return JSON.parse(userInfoString);
+    }
+    return null;
+}
+
+export const CurrentUser = reactive(restoreUserInfoFromLocal() || {
     id: 0,
     username: "",
-    avatar: "",
-    token: null,
+    email: "",
+    token: "",
     session: null,
-    initialized: false,
+    logined: false,
+});
+
+export const logout = () => {
+    localStorage.removeItem("currentUser");
+    CurrentUser.logined = false;
 }
+
 
 export const userInit = (id, username, avatar, token) => {
     CurrentUser.id = id;
     CurrentUser.username = username;
     CurrentUser.avatar = avatar;
     CurrentUser.token = token;
-    CurrentUser.session = new Session();
-    CurrentUser.initialized = true;
+    CurrentUser.session = new Session(token);
+    CurrentUser.logined = true;
+    console.log("user initialized", CurrentUser);
+
+
+    saveUserInfoToLocal(CurrentUser);
+}
+
+export const initWebSocket = () => {
+    if (CurrentUser.token) {
+        CurrentUser.session = new Session(CurrentUser.token);
+    }
 }
 
 class Session {
-    constructor() {
-        this.websocket = new WebSocket("ws://8.134.104.253:8080/ws");
-        this.websocket.onopen = this.onOpen;
-        this.websocket.onclose = this.onClose;
-        this.websocket.onmessage = this.onMessage;
+    constructor(token) {
+        this.token = token;
+        this.websocket = new WebSocket(`ws://8.134.104.253:8080/ws?token=${this.token}`);
+        this.websocket.onopen = () => this.onOpen();
+        this.websocket.onclose = () => this.onClose();
+        this.websocket.onmessage = (event) => this.onMessage(event);
     }
 
     onOpen() {
         console.log("session opened");
         this.heartbeatInterval = setInterval(() => {
             if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
-                this.websocket.send({
+                this.websocket.send(JSON.stringify({
                     timestamp: (new Date()).toISOString(),
-                    type: EventTypes.PingEvent
-                });
+                    eType: EventTypes().PingEvent
+                }));
             }
         }, 100000);
     }
@@ -55,25 +75,36 @@ class Session {
     }
 
     onMessage(event) {
-        console.log("session: message received");
+        console.log(`Session: ${event}`);
         if (event.data) {
             eventBus.Publish("message", JSON.parse(event.data));
         }
     }
 
     send(data) {
-        this.websocket.send(RegularMessage(data));
+        this.websocket.send(JSON.stringify(RegularMessage(data)));
     }
 
     reconnect() {
         let count = 9;
-        for (let i = 0; i < count; i++) {
-            if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
-                break;
+        let retryCount = 0;
+
+        const tryConnect = () => {
+            if (retryCount >= count) {
+                eventBus.Publish("disconnected");
+                return;
             }
-            setTimeout(() => this.websocket = new WebSocket("ws://8.134.104.253:8080/ws"), 1000);
-        }
-        eventBus.Publish("disconnected");
+
+            if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+                return;
+            }
+
+            retryCount++;
+            this.websocket = new WebSocket(`ws://8.134.104.253:8080/ws?token=${this.token}`);
+            setTimeout(tryConnect, 5000);
+        };
+
+        tryConnect();
     }
 
     close() {
@@ -83,22 +114,24 @@ class Session {
     }
 }
 
+
 const RegularMessage = (data) => {
     return {
+        userID: CurrentUser.id,
         timestamp: (new Date()).toISOString(),
-        type: data.type,
+        eType: data.eType,
         data: data,
     }
 }
 
-const EventTypes = () => {
+export const EventTypes = () => {
     return {
         UnknownEvent: 0,
-        AuthEvent: 1,
-        PingEvent: 2,
-        TextMessageEvent: 3,
-        BinaryMessageEvent: 4,
-        CodeGraphMessageEvent: 5,
+        PingEvent: 1,
+        TextMessageEvent: 2,
+        BinaryMessageEvent: 3,
+        CodeGraphMessageEvent: 4,
+        MarkdownMessageEvent: 5,
         RequestMessageRecordEvent: 6,
         ProjectInfoChangedEvent: 7,
         NewTaskEvent: 8,

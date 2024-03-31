@@ -1,25 +1,17 @@
 <template>
   <element id="task-panel">
-    <h1>task.title</h1>
-    <small>task.endAt</small>
-    <small>task.recvCount</small>
-    <small>task.status</small>
+    <h1>{{ rendData.title }}</h1>
+    <small>{{ rendData.endAt }}</small>
+    <small>{{ rendData.status }}</small>
     <h2>详情</h2>
-    <div id="content">
-      <MdPreview
-        id="'preview-only'"
-        model-value="task.content"
-      >
-        task.content
-      </MdPreview>
-    </div>
+    <MdPreview id="'preview-only'" :model-value="rendData.content"> </MdPreview>
   </element>
 </template>
 
 <script>
 export default {
   props: {
-    task: {
+    rendData: {
       type: Object,
       required: true,
     },
@@ -51,10 +43,6 @@ export default {
 
   * {
     margin: 0;
-  }
-
-  #content {
-    background-color: theme-color(grey);
   }
 }
 </style>

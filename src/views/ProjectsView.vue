@@ -1,42 +1,46 @@
 <template>
   <main>
-    <Bar follow />
+    <Bar />
     <el-tabs class="tab">
       <el-tab-pane label="项目">
-        <section id="projects-main">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item>
-              <a @click="$router.push('/')">Campfire</a>
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-              <a @click="$router.push('/projects')">项目</a>
-            </el-breadcrumb-item>
-          </el-breadcrumb>
-          <div class="end">
-            <Button
-              label="刷新"
-              @click="projectsOfUser"
-            />
-          </div>
-          <div id="projects">
-            <div
-              v-for="project in projects"
-              :key="project.id"
-              class="project-item"
-              @click="$router.push(`/project/${project.id}`)"
-            >
-              <div class="item-start">
-                <h2>project.title</h2>
-                project.memberCount
+        <el-scrollbar
+          ><section id="projects-main">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item>
+                <a @click="this.$router.push('/')">Campfire</a>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item
+                ><a @click="this.$router.push('/projects')"
+                  >项目</a
+                ></el-breadcrumb-item
+              >
+            </el-breadcrumb>
+            <div class="end">管理模式<el-switch v-model="isManageMode" /></div>
+            <div id="projects">
+              <div
+                v-for="project in projects"
+                :key="project.projectID"
+                class="project-item"
+                @click="this.$router.push(`/project/${project.projectID}`)"
+              >
+                <div class="item-start">
+                  <h2>{{ project.title }}</h2>
+                  {{ project.members.length }}名参与者
+                </div>
+                <div></div>
+                <div class="item-end">
+                  <TinyUserCard :user="project.owner" />
+                </div>
+                <button
+                  v-show="isManageMode"
+                  class="delete"
+                  @click="deleteProject"
+                >
+                  <el-icon><Delete color="white" /></el-icon>
+                </button>
               </div>
-              <div />
-              <div class="item-end">
-                project.owner
-              </div>
-            </div>
-          </div>
-        </section>
-      </el-tab-pane>
+            </div></section></el-scrollbar
+      ></el-tab-pane>
       <el-tab-pane label="新建">
         <section id="project-create">
           <el-breadcrumb separator="/">
@@ -48,95 +52,101 @@
             </el-breadcrumb-item>
             <el-breadcrumb-item>新建项目</el-breadcrumb-item>
           </el-breadcrumb>
+          <h1>创建新的项目</h1>
           <el-form
             id="project-form"
             :model="projectToCreate"
             label-width="auto"
           >
             <el-form-item label="项目名称">
-              <el-input v-model="projectToCreate.name" />
+              <el-input v-model="projectToCreate.title" />
             </el-form-item>
             <el-form-item label="简介">
-              <el-input
-                v-model="projectToCreate.description"
-                type="textarea"
-              />
-            </el-form-item>
-            <el-form-item>
-              <Button
-                label="创建"
-                @click="onSubmit"
-              />
+              <el-input v-model="projectToCreate.description" type="textarea" />
             </el-form-item>
           </el-form>
-        </section>
-      </el-tab-pane>
+          <Button label="创建" @click="createProject" /></section
+      ></el-tab-pane>
     </el-tabs>
   </main>
 </template>
 
 <script>
 import SideBar from "@/components/SideBar.vue";
+import TinyUserCard from "@/components/User/TinyUserCard.vue";
 import RegularButton from "@/components/RegularButton.vue";
 import { UserAPI, ProjectAPI } from "@/scripts/api.js";
-
+import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   components: {
     Bar: SideBar,
     Button: RegularButton,
+    TinyUserCard,
   },
 
   data() {
     return {
-      projects: [
-        {
-          id: 1,
-          title: "name",
-          tasks: [
-            { id: 1, name: "task" },
-            { id: 2, name: "task" },
-          ],
-        },
-        {
-          id: 2,
-          projectTitle: "2",
-          tasks: [{ id: 1, name: "task" }],
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-        {
-          id: 3,
-          projectTitle: "name",
-        },
-      ],
+      projects: [],
       projectToCreate: {},
+      isManageMode: false,
+      isLoaded: false,
     };
+  },
+
+  mounted() {
+    this.projectsOfUser();
   },
 
   methods: {
     projectsOfUser() {
-      this.projects = UserAPI.projects();
+      UserAPI.projects().then((response) => {
+        if (response.data.length == 0) {
+          this.isLoaded = true;
+          return;
+        }
+        this.projects = response.data;
+        this.isLoaded = true;
+        console.log(this.projects);
+      });
     },
     createProject() {
-      ProjectAPI.createProject(this.projectToCreate);
+      ProjectAPI.createProject(this.projectToCreate)
+        .then((response) => {
+          console.log(response);
+          ElMessage.success("创建成功");
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage.error("创建失败");
+        });
+    },
+    deleteProject(project, event) {
+      event.stopPropagation();
+      ElMessageBox.confirm(`确认删除项目${project.title}吗？`, "删除项目", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        ProjectAPI.disableProject(project.projectID)
+          .then(() => {
+            ElMessage({
+              type: "success",
+              message: "删除成功",
+            });
+            const index = this.projects.findIndex(
+              (item) => item.projectID === project.projectID
+            );
+            if (index !== -1) {
+              this.projects.splice(index, 1);
+            }
+          })
+          .catch(() => {
+            ElMessage({
+              type: "error",
+              message: "删除失败",
+            });
+          });
+      });
     },
   },
 };
@@ -146,7 +156,7 @@ export default {
 @use "@/styles/global.scss" as *;
 
 main {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
 
   display: flex;
@@ -156,7 +166,7 @@ main {
 
 #projects-main {
   width: 70%;
-  min-height: 100vh;
+  height: 100%;
   padding: 50px 100px;
   margin-left: 100px;
   display: flex;
@@ -169,6 +179,11 @@ main {
 
   .end {
     margin-left: auto;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
   }
 
   #projects {
@@ -180,34 +195,48 @@ main {
     flex-direction: column;
     gap: 15px;
 
-    min-height: 100vh;
     .project-item {
       width: 100%;
-      height: 150px;
+      height: 100px;
       border: 1px solid theme-color(border);
       border-radius: 10px;
 
-      box-sizing: border-box;
-      padding: 20px;
-      gap: 20px;
-
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-      grid-template-rows: 1fr;
-
-      &:hover {
-        background-color: theme-color(grey);
-      }
+      display: flex;
+      flex-direction: row;
 
       * {
         margin: 0;
       }
 
       .item-start {
-        text-align: left;
+        width: 80%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
       }
       .item-end {
-        text-align: right;
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        box-sizing: border-box;
+        padding: 20px;
+      }
+
+      .delete {
+        width: 30px;
+        background-color: red;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        display: flex;
+        justify-items: center;
+        align-items: center;
+
+        &:hover {
+          background-color: theme-color(theme);
+        }
       }
 
       transition: box-shadow 0.1s, left 1s ease-in, top 1s ease-in;
@@ -224,7 +253,7 @@ main {
 
 #project-create {
   width: 80%;
-  min-height: 100vh;
+  height: 100vh;
   padding: 50px 100px;
   margin-left: 100px;
   margin-right: 15%;

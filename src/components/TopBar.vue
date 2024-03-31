@@ -1,34 +1,22 @@
 <template>
-  <element
-    id="top-nav"
-    :class="{ follow: isFollow }"
-  >
+  <element id="top-nav" :class="{ follow: isFollow }">
     <div>
-      <h1 @click="$router.push('/')">
-        Campfire
-      </h1>
+      <h1 @click="$router.push('/')">Campfire</h1>
     </div>
-    <div
-      id="search-trigger"
-      @click="toggleSearch"
-    >
+    <div id="search-trigger" @click="toggleSearch">
       <Search id="search-trigger-icon" />
       <h4>搜索...</h4>
     </div>
     <nav>
-      <p @click="$router.push('/about')">
-        关于
-      </p>
-      <p @click="$router.push('/chat')">
-        主面板
-      </p>
+      <div>
+        <p @click="this.$router.push('/about')">关于</p>
+      </div>
+      <div>
+        <p @click="this.$router.push('/chat')">主面板</p>
+      </div>
     </nav>
     <UserLogin />
-    <div
-      v-if="showSearch"
-      class="overlay"
-      @click="toggleSearch"
-    >
+    <div v-if="showSearch" class="overlay" @click="toggleSearch">
       <component :is="showSearch ? 'Explorer' : ''" />
     </div>
   </element>
@@ -78,7 +66,7 @@ export default {
 
 #top-nav {
   display: grid;
-  grid-template-columns: 3fr 2fr 6fr 2fr;
+  grid-template-columns: 3fr 2fr 6fr 3fr;
   grid-template-rows: 1fr;
   place-items: center;
   width: 100vw;
@@ -102,10 +90,22 @@ nav {
   justify-self: flex-end;
 }
 
-nav p {
+nav div {
+  height: 100%;
+  width: 200px;
   font-weight: bold;
   color: theme-color(text);
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  &:hover {
+    background-color: theme-color(background);
+  }
 }
 
 nav a.router-link-exact-active {

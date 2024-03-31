@@ -107,7 +107,7 @@ export default {
     flex-direction: column;
     justify-content: center;
 
-    color: theme-color(background);
+    background-color: theme-color(background);
   }
 
   p {

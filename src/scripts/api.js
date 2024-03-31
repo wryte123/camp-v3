@@ -1,4 +1,5 @@
-import { postData, getData } from "./Requests"
+import { postData, getData, fileData, getURL } from "./Requests"
+import { CurrentUser } from "./session"
 
 
 
@@ -13,17 +14,20 @@ export const LoginAPI = {
 }
 
 export const UserAPI = {
-    async userInfo(userID, data) {
-        return getData(`/user/${userID}`, data)
+    async myInfo() {
+        return getData(`/user/${CurrentUser.id}`, {})
+    },
+    async userInfo(userID) {
+        return getData(`/user/${userID}`, {})
     },
     async findUsersByName(data) {
         return getData("/user/search", data)
     },
-    async privateCamps(data) {
-        return getData("/user/camps/private", data);
+    async privateCamps() {
+        return getData("/user/camps/private", {});
     },
-    async publicCamps(data) {
-        return getData("/user/camps", data);
+    async publicCamps() {
+        return getData("/user/camps", {});
     },
     async projects(data) {
         return getData("/user/projects", data);
@@ -34,6 +38,9 @@ export const UserAPI = {
     async editUserInfo(data) {
         return postData("/user/edit", data);
     },
+    async uploadUserAvatar(data) {
+        return fileData("/user/edit/avatar", [data]);
+    },
     async changePassword(data) {
         return postData("/user/edit/p", data);
     },
@@ -43,8 +50,8 @@ export const ProjectAPI = {
     async projectInfo(projectID) {
         return getData(`/project/${projectID}`, {});
     },
-    async disableProject(projectID, data) {
-        return postData(`/project/${projectID}/del`, data);
+    async disableProject(projectID) {
+        return postData(`/project/${projectID}/del`, {});
     },
     async publicCamps(projectID, data) {
         return getData(`/project/${projectID}/camps`, data);
@@ -61,20 +68,20 @@ export const ProjectAPI = {
 };
 
 export const TaskAPI = {
-    async createTask(projectID, data) {
-        return postData(`/project/${projectID}/new_task`, data);
+    async createTask(data) {
+        return postData(`/project/${data.projectID}/new_task`, data);
     },
-    async editTaskInfo(projectID, taskID, data) {
-        return postData(`/project/${projectID}/${taskID}/edit`, data);
+    async editTaskInfo(data) {
+        return postData(`/project/${data.projectID}/${data.taskID}/edit`, data);
     },
-    async deleteTask(projectID, taskID, data) {
-        return postData(`/project/${projectID}/${taskID}/del`, data);
+    async deleteTask(data) {
+        return postData(`/project/${data.projectID}/${data.taskID}/del`, data);
     },
-    async taskInfo(projectID, taskID, data) {
-        return getData(`/project/${projectID}/${taskID}`, data);
+    async taskInfo(data) {
+        return getData(`/project/${data.projectID}/${data.taskID}`, data);
     },
-    async tasks(projectID, data) {
-        return getData(`/project/${projectID}/tasks`, data);
+    async tasks(projectID) {
+        return getData(`/project/${projectID}/tasks`, {});
     }
 };
 
@@ -109,5 +116,40 @@ export const FileAPI = {
 
     async uploadFile(data) {
         return getData(`/file/upload/file`, data)
+    },
+
+    getMyAvatar() {
+        return getURL(`/user/${CurrentUser.id}/avatar`);
+    },
+
+    getUserAvatar(userID) {
+        return getURL(`/user/${userID}/avatar`);
+    },
+
+}
+
+export const GitAPI = {
+    async dir(projectID, branch, path) {
+        return getData(`/project/${projectID}/workplace/${branch}/dir?path=${path}`, {})
+    },
+
+    async openFile(projectID, branch, filePath) {
+        return getData(`/project/${projectID}/workplace/${branch}/open?path=${filePath}`, {});
+    },
+
+    async clone(projectID, branch) {
+        return getData(`/project/${projectID}/workplace/${branch}/clone`, {});
+    },
+
+    async commit(projectID, branch, data) {
+        return fileData(`/project/${projectID}/workplace/${branch}/commit`, data);
+    },
+
+    async createBranch(projectID, branch) {
+        return postData(`/project/${projectID}/workplace/${branch}/create`, {});
+    },
+
+    async removeBranches(projectID, branch) {
+        return postData(`project/${projectID}/workplace/${branch}/rm`, {})
     }
 }
