@@ -4,11 +4,16 @@
 
 <script>
 export default {
-  name: "DefaultMessage",
+  props: {
+    message: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 p {
   color: theme-color(red);
 }

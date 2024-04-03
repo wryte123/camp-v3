@@ -1,13 +1,9 @@
 <template>
-  <element id="member-card">
-    <el-avatar @click="toMemberInfo">
-      <img
-        src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-      >
-    </el-avatar>
-    <div>
-      <h4>data.memberName</h4>
-      <small>data.memberTitle</small>
+  <element class="member-card">
+    <Avatar :user="data.user.id" @click="toMemberInfo" />
+    <div class="member-info">
+      <h4>{{ data.nickname === "" ? data.user.username : data.nickname }}</h4>
+      <small>{{ data.memberTitle }}</small>
     </div>
     <span>
       <el-icon @click="toMemberChat"><ChatLineSquare /></el-icon>
@@ -20,9 +16,14 @@
 
 <script>
 import { eventBus } from "@/scripts/EventBus.js";
+import Avatar from "../Avatar.vue";
 
 export default {
   name: "MemberCard",
+
+  components: {
+    Avatar,
+  },
 
   props: {
     data: {
@@ -46,17 +47,19 @@ export default {
 <style lang="scss" scoped>
 @use "@/styles/global.scss" as *;
 
-#member-card {
+.member-card {
   box-sizing: border-box;
 
   display: grid;
-  grid-template-columns: 1fr 3fr 30px 30px;
-
-  // display: flex;
-  // flex-direction: row;
+  grid-template-columns: 40px 3fr 30px 30px;
 
   align-items: center;
   padding: 10px;
+  gap: 10px;
+
+  &:hover {
+    background-color: theme-color(grey);
+  }
 
   * {
     margin: 0;
@@ -68,6 +71,18 @@ export default {
 
   span:hover {
     background-color: theme-color(grey) !important;
+  }
+
+  .member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+
+    * {
+      margin: 0;
+    }
   }
 }
 </style>

@@ -32,8 +32,8 @@ export const UserAPI = {
     async projects(data) {
         return getData("/user/projects", data);
     },
-    async tasks(projectID, data) {
-        return getData(`/user/project/${projectID}/tasks`, data);
+    async tasks(projID, data) {
+        return getData(`/user/project/${projID}/tasks`, data);
     },
     async editUserInfo(data) {
         return postData("/user/edit", data);
@@ -47,41 +47,41 @@ export const UserAPI = {
 }
 
 export const ProjectAPI = {
-    async projectInfo(projectID) {
-        return getData(`/project/${projectID}`, {});
+    async projectInfo(projID) {
+        return getData(`/project/${projID}`, {});
     },
-    async disableProject(projectID) {
-        return postData(`/project/${projectID}/del`, {});
+    async disableProject(projID) {
+        return postData(`/project/${projID}/del`, {});
     },
-    async publicCamps(projectID, data) {
-        return getData(`/project/${projectID}/camps`, data);
+    async publicCamps(projID, data) {
+        return getData(`/project/${projID}/camps`, data);
     },
     async createProject(data) {
         return postData("/project/new_proj", data);
     },
-    async editProjectInfo(projectID, data) {
-        return postData(`/project/${projectID}/edit`, data);
+    async editProjectInfo(projID, data) {
+        return postData(`/project/${projID}/edit`, data);
     },
-    async createCamp(projectID, data) {
-        return postData(`/project/${projectID}/new_camp`, data);
+    async createCamp(projID, data) {
+        return postData(`/project/${projID}/new_camp`, data);
     }
 };
 
 export const TaskAPI = {
     async createTask(data) {
-        return postData(`/project/${data.projectID}/new_task`, data);
+        return postData(`/project/${data.projID}/new_task`, data);
     },
     async editTaskInfo(data) {
-        return postData(`/project/${data.projectID}/${data.taskID}/edit`, data);
+        return postData(`/project/${data.projID}/${data.taskID}/edit`, data);
     },
     async deleteTask(data) {
-        return postData(`/project/${data.projectID}/${data.taskID}/del`, data);
+        return postData(`/project/${data.projID}/${data.taskID}/del`, data);
     },
     async taskInfo(data) {
-        return getData(`/project/${data.projectID}/${data.taskID}`, data);
+        return getData(`/project/${data.projID}/${data.taskID}`, data);
     },
-    async tasks(projectID) {
-        return getData(`/project/${projectID}/tasks`, {});
+    async tasks(projID) {
+        return getData(`/project/${projID}/tasks`, {});
     }
 };
 
@@ -129,27 +129,27 @@ export const FileAPI = {
 }
 
 export const GitAPI = {
-    async dir(projectID, branch, path) {
-        return getData(`/project/${projectID}/workplace/${branch}/dir?path=${path}`, {})
+    async dir(projID, branch, path) {
+        return getData(`/project/${projID}/workplace/${branch}/dir?path=${path}`, {})
     },
 
-    async openFile(projectID, branch, filePath) {
-        return getData(`/project/${projectID}/workplace/${branch}/open?path=${filePath}`, {});
+    async openFile(projID, branch, filePath) {
+        return getData(`/project/${projID}/workplace/${branch}/open?path=${filePath}`, {});
     },
 
-    async clone(projectID, branch) {
-        return getData(`/project/${projectID}/workplace/${branch}/clone`, {});
+    async clone(projID, branch) {
+        return getData(`/project/${projID}/workplace/${branch}/clone`, {});
     },
 
-    async commit(projectID, branch, data) {
-        return fileData(`/project/${projectID}/workplace/${branch}/commit`, data);
+    async commit(projID, branch, data) {
+        return fileData(`/project/${projID}/workplace/${branch}/commit`, data);
     },
 
-    async createBranch(projectID, branch) {
-        return postData(`/project/${projectID}/workplace/${branch}/create`, {});
+    async createBranch(projID, branch) {
+        return postData(`/project/${projID}/workplace/${branch}/create`, {});
     },
 
-    async removeBranches(projectID, branch) {
-        return postData(`project/${projectID}/workplace/${branch}/rm`, {})
+    async removeBranches(projID, branch) {
+        return postData(`project/${projID}/workplace/${branch}/rm`, {})
     }
 }

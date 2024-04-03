@@ -1,5 +1,6 @@
 import { eventBus } from './EventBus.js';
 import { reactive } from "vue";
+import ElMessage from "element-plus";
 
 const saveUserInfoToLocal = (userInfo) => {
     localStorage.setItem("currentUser", JSON.stringify(userInfo));
@@ -25,6 +26,8 @@ export const CurrentUser = reactive(restoreUserInfoFromLocal() || {
 export const logout = () => {
     localStorage.removeItem("currentUser");
     CurrentUser.logined = false;
+    CurrentUser.session.close();
+    ElMessage.info("已登出")
 }
 
 
@@ -75,10 +78,13 @@ class Session {
     }
 
     onMessage(event) {
-        console.log(`Session: ${event}`);
-        if (event.data) {
-            eventBus.Publish("message", JSON.parse(event.data));
+        console.log(event.data);
+        let message = JSON.parse(event.data);
+        if (message.data == "pong") {
+            console.log("from server: pong!");
+            return
         }
+        eventBus.publish("message", message);
     }
 
     send(data) {
@@ -109,7 +115,7 @@ class Session {
 
     close() {
         if (this.websocket) {
-            this.websocket.close();
+            this.websocket.close(1000, 'Connection closed by client');
         }
     }
 }

@@ -1,9 +1,15 @@
 <template>
   <element id="camp-panel">
     <div id="camp-card">
-      <h1>rendData.name</h1>
-      <small>成员人数rendData.memberCount人</small>
-      <small>创建于rendData.begin</small>
+      <h1>{{ rendData.name }}</h1>
+      <div class="card-line">
+        <el-icon><UserFilled /></el-icon>
+        <p>{{ rendData.members.length }}名成员</p>
+      </div>
+      <div class="card-line">
+        <el-icon><Check /></el-icon>
+        <p>创建于{{ rendData.begin }}</p>
+      </div>
       <el-divider />
       <div id="camp-opts">
         <div><CirclePlus class="panel-icon" />邀请</div>
@@ -20,21 +26,6 @@
     <div id="member-panel">
       <el-scrollbar>
         <div id="members">
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
-          <MemberCard />
           <MemberCard
             v-for="member in rendData.members"
             :key="member.userId"
@@ -75,7 +66,6 @@ export default {
   width: 100%;
 
   #camp-card {
-    height: 30%;
     width: 100%;
 
     display: flex;
@@ -90,7 +80,15 @@ export default {
       margin: 0;
     }
 
+    .card-line {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+    }
+
     #camp-opts {
+      min-width: 20%;
       width: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));

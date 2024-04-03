@@ -1,7 +1,7 @@
 <template>
   <element class="user-card-tiny">
     <Avatar :user="user.id" />
-    {{ user.username }}
+    {{ username }}
   </element>
 </template>
 
@@ -16,6 +16,15 @@ export default {
   props: {
     user: {
       type: Object,
+    },
+  },
+
+  computed: {
+    username() {
+      if (!this.user || this.user.username == "") {
+        return "nobody";
+      }
+      return this.user.username;
     },
   },
 };

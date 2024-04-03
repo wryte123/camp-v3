@@ -4,9 +4,6 @@
       <el-icon id="enlarge" class="icon" @click="handleExpand">
         <ArrowLeftBold />
       </el-icon>
-      <div id="title">
-        <h2>任务详情</h2>
-      </div>
       <el-icon
         v-show="!isDefault"
         id="back"
@@ -16,8 +13,7 @@
         <CloseBold />
       </el-icon>
     </div>
-    <div v-if="task == null" class="loading">暂无内容</div>
-    <div v-if="!isActivated" class="loading">暂无内容</div>
+    <div v-if="!task" class="loading-view"><Loading /></div>
     <div v-else>
       <TaskPanel :rendData="task" />
     </div>
@@ -26,9 +22,11 @@
 
 <script>
 import TaskPanel from "./TaskPanel.vue";
+import Loading from "../Loading.vue";
 
 export default {
   components: {
+    Loading,
     TaskPanel,
   },
 
@@ -44,14 +42,12 @@ export default {
       payload: {},
       isDefault: true,
       subComponent: null,
-      isActivated: false,
     };
   },
 
   methods: {
     handleExpand() {
       this.$emit("toggle");
-      this.isActivated = !this.isActivated;
     },
   },
 };
@@ -91,23 +87,7 @@ export default {
     .icon {
       height: 100%;
       width: 50px;
-      background-color: rgba(255, 255, 255, 0);
-
       transition: all 0.1s ease;
-    }
-
-    #title {
-      height: 100%;
-      width: 100%;
-
-      background-color: rgba(255, 255, 255, 0);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      h2 {
-        margin: 0;
-      }
     }
   }
 }

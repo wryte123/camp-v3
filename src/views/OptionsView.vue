@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Bar follow />
+    <Bar />
     <section id="options-main">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
@@ -119,7 +119,7 @@ export default {
 @use "@/styles/global.scss" as *;
 
 main {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
 
   display: flex;
@@ -127,10 +127,9 @@ main {
 }
 
 #options-main {
-  width: 80%;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   padding: 50px 100px;
-  margin-left: 100px;
 
   display: flex;
   flex-direction: column;

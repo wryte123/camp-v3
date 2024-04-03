@@ -42,9 +42,13 @@
             <el-step title="已归档" />
           </el-steps>
         </div>
+        <h2>工作空间</h2>
+        <div class="project-part">
+          <WorkplacePanel :project="project" :branches="branches" />
+        </div>
         <h2>分支</h2>
         <div class="project-part">
-          <Branches />
+          <Branches :branches="branches" />
         </div>
         <h2>成员列表</h2>
         <div id="member-panel">
@@ -60,23 +64,13 @@
         </div>
       </section>
     </el-scrollbar>
-    <aside id="proj-sub">
-      <p @click="$router.push(`/workplace/${project.projectID}/main`)">
-        源代码
-      </p>
-
-      <p>任务</p>
-      <p>项目文档</p>
-
-      <p>发行版本</p>
-      <p>测试</p>
-    </aside>
   </main>
 </template>
 
 <script>
 import SideBar from "@/components/SideBar.vue";
 import Branches from "@/components/Project/Branches.vue";
+import WorkplacePanel from "@/components/Project/WorkplacePanel.vue";
 import { ProjectAPI } from "@/scripts/api.js";
 import { formatDateFromISO } from "@/scripts/utils.js";
 import MemberCard from "@/components/Project/MemberCard.vue";
@@ -87,6 +81,7 @@ export default {
 
   components: {
     Bar: SideBar,
+    WorkplacePanel,
     Branches,
     MemberCard,
   },
@@ -100,6 +95,17 @@ export default {
     return {
       project: {},
       isLoaded: false,
+      branches: [
+        {
+          name: "main",
+          isMain: true,
+          updated: "2024-04-02T11:13:46.626Z",
+        },
+        {
+          name: "master",
+          updated: "2024-04-02T11:13:46.626Z",
+        },
+      ],
     };
   },
 
@@ -135,7 +141,7 @@ main {
 }
 
 #proj-main {
-  height: 100%;
+  min-height: 100vh;
   padding: 50px 100px;
 
   display: flex;

@@ -8,7 +8,6 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
-      scrollbar: true,
       requiresAuth: false,
     }
   },
@@ -21,7 +20,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
     ,
     meta: {
-      scrollbar: false,
       requiresAuth: false,
     }
   },
@@ -32,7 +30,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "chat" */ '../views/ChatView.vue')
     ,
     meta: {
-      scrollbar: false,
       requiresAuth: true,
     }
   },
@@ -42,18 +39,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
     ,
     meta: {
-      scrollbar: false,
       requiresAuth: false,
     }
   },
   {
-    path: '/register',
-    name: 'register',
-    component: () => import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
+    path: '/notice',
+    name: 'notice',
+    component: () => import('../views/NoticeView.vue')
     ,
     meta: {
-      scrollbar: false,
-      requiresAuth: false,
+      requiresAuth: true,
     }
   },
   {
@@ -61,12 +56,11 @@ const routes = [
     name: 'projects',
     component: () => import('../views/ProjectsView.vue'),
     meta: {
-      scrollbar: true,
       requiresAuth: true,
     }
   },
   {
-    path: '/project/:project_id',
+    path: '/projects/:project_id',
     name: 'project',
     component: () => import('../views/ProjectView.vue'),
     meta: {
@@ -79,7 +73,6 @@ const routes = [
     name: 'tasks',
     component: () => import('../views/TasksView.vue'),
     meta: {
-      scrollbar: true,
       requiresAuth: true,
     }
   },
@@ -88,7 +81,6 @@ const routes = [
     name: 'options',
     component: () => import('../views/OptionsView.vue'),
     meta: {
-      scrollbar: true,
       requiresAuth: true,
     }
   },
@@ -97,7 +89,6 @@ const routes = [
     name: 'workplace',
     component: () => import('../views/WorkplaceView.vue'),
     meta: {
-      scrollbar: false,
       requiresAuth: true,
     }
   },
@@ -121,13 +112,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-  const scrollbar = to.meta.scrollbar;
-  if (scrollbar) {
-    document.body.style.overflow = '';
-  } else {
-    document.body.style.overflow = 'hidden';
-  }
-  next();
 });
 
 export default router

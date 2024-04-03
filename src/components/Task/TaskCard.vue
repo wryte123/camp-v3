@@ -71,7 +71,7 @@ export default {
   transition: box-shadow 0.1s;
 
   &:hover {
-    box-shadow: 1px 1px 3px 3px theme-color(border);
+    box-shadow: 2px 2px 2px 3px theme-color(border);
   }
 }
 </style>

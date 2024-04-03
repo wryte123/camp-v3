@@ -3,7 +3,7 @@
     <h1>{{ rendData.title }}</h1>
     <small>{{ rendData.endAt }}</small>
     <small>{{ rendData.status }}</small>
-    <h2>详情</h2>
+    <h1>任务详情</h1>
     <MdPreview id="'preview-only'" :model-value="rendData.content"> </MdPreview>
   </element>
 </template>

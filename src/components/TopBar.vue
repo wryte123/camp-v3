@@ -67,9 +67,9 @@ export default {
 #top-nav {
   display: grid;
   grid-template-columns: 3fr 2fr 6fr 3fr;
-  grid-template-rows: 1fr;
   place-items: center;
   width: 100vw;
+  height: 100px;
   background-color: theme-color(white);
 
   backdrop-filter: blur(10px);
@@ -77,6 +77,10 @@ export default {
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 
   z-index: 990;
+
+  * {
+    margin: 0;
+  }
 }
 
 nav {

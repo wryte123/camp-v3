@@ -1,5 +1,6 @@
 <template>
-  <el-avatar :src="avatarInfo" />
+  <el-avatar v-if="ex">User</el-avatar>
+  <el-avatar v-else :src="avatarInfo" @error="handleError" fit="cover" />
 </template>
 
 <script>
@@ -12,12 +13,24 @@ export default {
     },
   },
 
+  data() {
+    return {
+      ex: false,
+    };
+  },
+
   computed: {
     avatarInfo() {
       if (this.user == "me") {
         return FileAPI.getMyAvatar();
       }
-      return FileAPI.getUserAvatar(this.who);
+      return FileAPI.getUserAvatar(this.user);
+    },
+  },
+
+  methods: {
+    handleError() {
+      this.ex = true;
     },
   },
 };

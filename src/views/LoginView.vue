@@ -2,7 +2,11 @@
   <main id="login-wrapper">
     <section id="login-main">
       <div id="login-view">
-        <img src="@/assets/login_view.jpg">
+        <div class="back" @click="$router.push('/')">
+          <ArrowLeftBold class="nav-icon" />
+          返回
+        </div>
+        <img src="@/assets/login_view.jpg" />
       </div>
       <div id="login-panel">
         <el-tabs>
@@ -13,21 +17,10 @@
               :model="loginForm"
               :rules="loginRules"
             >
-              <el-form-item
-                label="账号"
-                size="large"
-                prop="email"
-              >
-                <el-input
-                  v-model="loginForm.email"
-                  placeholder="输入邮箱..."
-                />
+              <el-form-item label="账号" size="large" prop="email">
+                <el-input v-model="loginForm.email" placeholder="输入邮箱..." />
               </el-form-item>
-              <el-form-item
-                label="密码"
-                size="large"
-                prop="password"
-              >
+              <el-form-item label="密码" size="large" prop="password">
                 <el-input
                   v-model="loginForm.password"
                   placeholder="输入密码..."
@@ -37,11 +30,7 @@
                 />
               </el-form-item>
               <el-form-item>
-                <Button
-                  label="登录"
-                  colored
-                  @click="handleLogin"
-                />
+                <Button label="登录" colored @click="handleLogin" />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -52,31 +41,19 @@
               :model="registerForm"
               :rules="registerRules"
             >
-              <el-form-item
-                label="邮箱"
-                size="large"
-                prop="email"
-              >
+              <el-form-item label="邮箱" size="large" prop="email">
                 <el-input
                   v-model="registerForm.email"
                   placeholder="输入邮箱..."
                 />
               </el-form-item>
-              <el-form-item
-                label="昵称"
-                size="large"
-                prop="username"
-              >
+              <el-form-item label="昵称" size="large" prop="username">
                 <el-input
                   v-model="registerForm.username"
                   placeholder="输入昵称..."
                 />
               </el-form-item>
-              <el-form-item
-                label="密码"
-                size="large"
-                prop="password"
-              >
+              <el-form-item label="密码" size="large" prop="password">
                 <el-input
                   v-model="registerForm.password"
                   placeholder="输入密码..."
@@ -99,11 +76,7 @@
                 />
               </el-form-item>
               <el-form-item>
-                <Button
-                  label="注册"
-                  colored
-                  @click="handleRegister"
-                />
+                <Button label="注册" colored @click="handleRegister" />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -176,7 +149,9 @@ export default {
           );
           ElMessage.success("登录成功");
           console.log(response);
-          this.$router.push("/chat");
+          setTimeout(() => {
+            this.$router.push("/chat");
+          }, 1000);
         })
         .catch((error) => {
           ElMessage.error("登录失败，请检查电子邮箱和密码");
@@ -251,5 +226,20 @@ export default {
       padding: 10% 30px;
     }
   }
+}
+
+.back {
+  margin-left: 8px;
+  margin-top: 10px;
+  position: absolute;
+
+  color: white;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  cursor: pointer;
 }
 </style>

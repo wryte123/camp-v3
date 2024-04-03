@@ -1,6 +1,6 @@
 <template>
   <element id="member-card">
-    <el-avatar />
+    <Avatar :user="data.user.id" />
     <div>
       <h4>{{ data.user.username }}</h4>
       <small>{{ data.title }}</small>
@@ -10,8 +10,14 @@
 </template>
 
 <script>
+import Avatar from "../Avatar.vue";
+
 export default {
   name: "MemberCard",
+
+  components: {
+    Avatar,
+  },
 
   props: {
     data: {

@@ -1,47 +1,52 @@
 <template>
-  <el-scrollbar style="height: 300px; width: 100%">
-    <element id="branches">
-      <div
-        v-for="branch in branches"
-        :key="branch.id"
-        class="branch"
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 48 48"
-          fill="none"
-          class="panel-icon"
-        >
-          <path
-            d="M19 10a4 4 0 11-8 0 4 4 0 018 0zM38 10a4 4 0 11-8 0 4 4 0 018 0zM19 38a4 4 0 11-8 0 4 4 0 018 0zM15 15v15m0 3.5V30m0 0c0-5 19-7 19-15"
-            stroke="#4E5969"
-            stroke-width="2"
-          />
-        </svg>
-        <h3>{{ branch.name }}</h3>
-        <div v-show="branch.isMain">
-          主要
+  <element id="branches">
+    <el-scrollbar style="max-height: 300px">
+      <div class="branches-main">
+        <div v-for="branch in branches" :key="branch.id" class="branch">
+          <div class="start">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 48 48"
+              fill="none"
+              class="panel-icon"
+            >
+              <path
+                d="M19 10a4 4 0 11-8 0 4 4 0 018 0zM38 10a4 4 0 11-8 0 4 4 0 018 0zM19 38a4 4 0 11-8 0 4 4 0 018 0zM15 15v15m0 3.5V30m0 0c0-5 19-7 19-15"
+                stroke="#4E5969"
+                stroke-width="2"
+              />
+            </svg>
+            <h3>{{ branch.name }}</h3>
+            <div v-show="branch.isMain">主要</div>
+          </div>
+          <small>最后更新于{{ branch.updated }}</small>
         </div>
-        <small>最后更新于{{ branch.begin }}</small>
       </div>
-    </element>
-  </el-scrollbar>
+    </el-scrollbar>
+  </element>
 </template>
 
 <script>
+import { formatTimeFromISO } from "@/scripts/utils";
+
 export default {
-  data() {
-    return {
-      branches: [
-        {
-          id: 1,
-          name: "main",
-          isMain: true,
-          begin: 13,
-        },
-      ],
-    };
+  props: {
+    branches: {
+      type: Object,
+    },
+  },
+
+  created() {
+    this.time();
+  },
+
+  methods: {
+    time() {
+      this.branches.forEach((branch) => {
+        branch.updated = formatTimeFromISO(branch.updated);
+      });
+    },
   },
 };
 </script>
@@ -50,22 +55,25 @@ export default {
 @use "@/styles/global.scss" as *;
 
 #branches {
-  height: 300px;
+  min-height: 100px;
+  max-height: 300px;
   width: 100%;
 
-  display: flex;
-  flex-direction: column;
-
   box-sizing: border-box;
-  padding: 10px;
 
   * {
     margin: 0;
   }
 }
 
+.branches-main {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+}
 .branch {
-  height: 15%;
+  height: 50px;
   width: 100%;
 
   display: flex;
@@ -82,6 +90,14 @@ export default {
 
   &:hover {
     box-shadow: 3px 3px 5px 1px theme-color(border);
+  }
+
+  .start {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 70%;
   }
 }
 </style>

@@ -1,16 +1,24 @@
 <template>
-  <aside
-    class="sidebar"
-    :class="{ follow: isFollow }"
-  >
+  <aside class="sidebar" :class="{ follow: isFollow }">
     <div>
       <Avatar user="me" class="avatar" />
     </div>
+    <router-link to="/">
+      <div class="sidebar-item">
+        <Back
+          class="nav-icon"
+          @mouseover="showTooltip('home')"
+          @mouseleave="hideTooltip('home')"
+        />
+        <transition name="fade">
+          <div v-if="tooltip === 'home'" class="tooltip">主页</div>
+        </transition>
+      </div>
+    </router-link>
     <div class="sidebar-panel">
-      <div>
+      <div class="sidebar-item" @click="this.showSearch = !this.showSearch">
         <Search
           class="nav-icon"
-          @click="this.showSearch = !this.showSearch"
           @mouseover="showTooltip('search')"
           @mouseleave="hideTooltip('search')"
         />
@@ -19,87 +27,76 @@
             搜索
           </div></transition
         >
-        <div
-          class="overlay"
-          v-if="showSearch"
-          @click="this.showSearch = !this.showSearch"
-        >
-          <component :is="showSearch ? 'Explorer' : ''"></component>
-        </div>
       </div>
-      <router-link to="/">
-        <HomeFilled
-          class="nav-icon"
-          @mouseover="showTooltip('home')"
-          @mouseleave="hideTooltip('home')"
-        />
-        <transition name="fade">
-          <div
-            v-if="tooltip === 'home'"
-            class="tooltip"
-          >
-            主页
-          </div>
-        </transition>
-      </router-link>
+      <div
+        class="overlay"
+        v-if="showSearch"
+        @click="this.showSearch = !this.showSearch"
+      >
+        <component :is="showSearch ? 'Explorer' : ''"></component>
+      </div>
       <router-link to="/chat">
-        <ChatLineSquare
-          class="nav-icon"
-          @mouseover="showTooltip('chat')"
-          @mouseleave="hideTooltip('chat')"
-        /><transition name="fade">
-          <div
-            v-if="tooltip === 'chat'"
-            class="tooltip"
-          >
-            聊天
-          </div>
-        </transition>
+        <div class="sidebar-item" :class="{ active: isActive('/chat') }">
+          <ChatLineSquare
+            class="nav-icon"
+            @mouseover="showTooltip('chat')"
+            @mouseleave="hideTooltip('chat')"
+          /><transition name="fade">
+            <div v-if="tooltip === 'chat'" class="tooltip">交流</div>
+          </transition>
+        </div>
       </router-link>
 
       <router-link to="/projects">
-        <Files
-          class="nav-icon"
-          @mouseover="showTooltip('proj')"
-          @mouseleave="hideTooltip('proj')"
-        /><transition name="fade">
-          <div
-            v-if="tooltip === 'proj'"
-            class="tooltip"
-          >
-            项目
-          </div>
-        </transition>
+        <div class="sidebar-item" :class="{ active: isActive('/projects') }">
+          <Files
+            class="nav-icon"
+            @mouseover="showTooltip('proj')"
+            @mouseleave="hideTooltip('proj')"
+          /><transition name="fade">
+            <div v-if="tooltip === 'proj'" class="tooltip">项目</div>
+          </transition>
+        </div>
       </router-link>
+
       <router-link to="/tasks">
-        <DocumentChecked
-          class="nav-icon"
-          @mouseover="showTooltip('task')"
-          @mouseleave="hideTooltip('task')"
-        /><transition name="fade">
-          <div
-            v-if="tooltip === 'task'"
-            class="tooltip"
-          >
-            任务
-          </div>
-        </transition>
+        <div class="sidebar-item" :class="{ active: isActive('/tasks') }">
+          <DocumentChecked
+            class="nav-icon"
+            @mouseover="showTooltip('task')"
+            @mouseleave="hideTooltip('task')"
+          /><transition name="fade">
+            <div v-if="tooltip === 'task'" class="tooltip">任务</div>
+          </transition>
+        </div>
       </router-link>
     </div>
-    <router-link to="/options">
-      <MoreFilled
-        class="panel-icon"
-        @mouseover="showTooltip('opt')"
-        @mouseleave="hideTooltip('opt')"
-      /><transition name="fade">
-        <div
-          v-if="tooltip === 'opt'"
-          class="tooltip"
-        >
-          设置
+    <div class="sidebar-panel">
+      <router-link to="/notice">
+        <div class="sidebar-item" :class="{ active: isActive('/notice') }">
+          <Message
+            class="nav-icon"
+            @mouseover="showTooltip('notice')"
+            @mouseleave="hideTooltip('notice')"
+          />
+          <transition name="fade">
+            <div v-if="tooltip === 'notice'" class="tooltip">通知</div>
+          </transition>
         </div>
-      </transition>
-    </router-link>
+      </router-link>
+
+      <router-link to="/options">
+        <div class="sidebar-item" :class="{ active: isActive('/options') }">
+          <MoreFilled
+            class="nav-icon"
+            @mouseover="showTooltip('opt')"
+            @mouseleave="hideTooltip('opt')"
+          /><transition name="fade">
+            <div v-if="tooltip === 'opt'" class="tooltip">设置</div>
+          </transition>
+        </div>
+      </router-link>
+    </div>
   </aside>
 </template>
 
@@ -138,6 +135,9 @@ export default {
     },
   },
   methods: {
+    isActive(route) {
+      return this.$route.path.startsWith(route);
+    },
     showTooltip(text) {
       this.tooltip = text;
     },
@@ -153,26 +153,43 @@ export default {
 
 .sidebar {
   position: relative;
-  height: 100vh;
-  width: 100px;
-  min-width: 100px;
+  height: 100%;
+  width: 80px;
+  min-width: 80px;
 
-  background-color: theme-color(white);
+  background-color: theme-color(junior);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 20px 0;
 
   border-right: 1px solid theme-color(border);
 
   display: grid;
-  grid-template-rows: 1fr 8fr 1fr;
+  grid-template-rows: 1fr 1fr 8fr 2fr;
 
   z-index: 990;
 
   .sidebar-panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
   }
+}
+
+.sidebar-item {
+  height: 60px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: theme-color(theme-upper);
+  }
+}
+
+.sidebar-item.active {
+  background-color: theme-color(theme);
+  border-right: 3px solid theme-color(border);
 }
 
 .sidebar a {
@@ -180,10 +197,6 @@ export default {
   font-weight: bold;
   color: theme-color(text);
   text-decoration: none;
-}
-
-.sidebar a:hover {
-  color: theme-color(primary);
 }
 
 .content {
@@ -221,6 +234,10 @@ S .fade-leave-to {
 }
 
 .avatar {
-  border: 2px solid theme-color(text);
+  border: 2px solid theme-color(border);
+}
+
+.nav-icon {
+  color: white;
 }
 </style>

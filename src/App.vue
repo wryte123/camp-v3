@@ -12,6 +12,7 @@
 body {
   margin: 0;
   color: theme-color(text);
+  overflow: hidden;
 }
 
 #app {
@@ -19,23 +20,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-}
-
-.nav-icon {
-  height: 35px;
-  width: 35px;
-
-  border: 2px solid theme-color(text);
-  border-radius: 5px;
-
-  &:hover {
-    background-color: theme-color(grey);
-  }
-}
-
-.panel-icon {
-  height: 30px;
-  width: 30px;
 }
 
 .tooltip {
@@ -53,7 +37,7 @@ body {
   z-index: 996;
 }
 
-.loading {
+.loading-view {
   height: 100%;
   display: flex;
   align-items: center;
@@ -65,9 +49,19 @@ body {
   width: 100%;
 }
 
-.file-icon {
-  width: 30px;
+.nav-icon {
+  height: 25px;
+  width: 25px;
+}
+
+.panel-icon {
   height: 30px;
+  width: 30px;
+}
+
+.file-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .hover-icon {
@@ -78,6 +72,23 @@ body {
 
   &:hover {
     background-color: theme-color(grey);
+  }
+}
+
+.icon-button {
+  color: theme-color(white);
+  border: 1px solid theme-color(border);
+  border-radius: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 70px;
+  height: 30px;
+
+  &:hover {
+    opacity: 0.7;
   }
 }
 </style>

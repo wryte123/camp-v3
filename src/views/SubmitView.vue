@@ -10,12 +10,12 @@
           <a @click="$router.push('/projects')">项目</a>
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-          <a @click="$router.push(`/project/${project.id}`)">project.title</a>
+          <a @click="$router.push(`/projects/${project.id}`)">project.title</a>
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-          <a
-            @click="$router.push(`/project/${project.id}/${branch_name}`)"
-          >branchname</a>
+          <a @click="$router.push(`/projects/${project.id}/${branch_name}`)"
+            >branchname</a
+          >
         </el-breadcrumb-item>
         <el-breadcrumb-item>提交</el-breadcrumb-item>
       </el-breadcrumb>

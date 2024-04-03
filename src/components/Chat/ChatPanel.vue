@@ -1,9 +1,27 @@
 <template>
   <element id="chat-panel" @click="handleWindowClick">
     <section id="list">
-      <el-skeleton loading="!isListLoaded" animated>
+      <div class="top">
+        <section class="top-left">
+          <div>
+            <Memo class="panel-icon" />
+          </div>
+          <div>
+            <user class="panel-icon" />
+          </div>
+        </section>
+        <div>
+          <Plus class="panel-icon" />
+        </div>
+      </div>
+      <el-skeleton :loading="!isListLoaded" animated>
         <template #template>
-          <div v-for="index in 11" :key="index" class="camp-brief">
+          <div
+            v-for="index in 11"
+            :key="index"
+            class="camp-brief"
+            style="border: none"
+          >
             <el-skeleton-item
               variant="circle"
               style="width: 50px; height: 50px"
@@ -15,28 +33,37 @@
         </template>
         <template #default>
           <el-scrollbar height="100%">
-            <div v-for="(item, index) in camps" :key="index" class="camp-brief">
-              <el-avatar />
+            <div
+              v-for="(camp, index) in camps"
+              :key="index"
+              class="camp-brief"
+              :class="{ active: currentCamp.index === index }"
+              @click="selectCamp(index)"
+            >
+              <el-avatar><Coffee /></el-avatar>
               <div>
-                <h4>{{ item.name }}</h4>
-                <p>收到{{ item.newMessageCount }}条新消息</p>
+                <h4>{{ camp.name }}</h4>
+                <p>收到{{ camp.newMessageCount }}条新消息</p>
               </div>
             </div>
           </el-scrollbar>
         </template>
       </el-skeleton>
     </section>
-
+    <section v-if="isDefault" id="no-chat">
+      Hello,&nbsp;<span>Campfire!😊</span>
+    </section>
     <section
+      v-else
       id="chat"
       v-loading="!isMessageLoaded"
       element-loading-background="white"
     >
       <div id="board" :class="{ 'md-board': md }">
-        <el-scrollbar ref="bar" height="85vh" @scroll="handleScroll">
+        <el-scrollbar ref="bar" @scroll="handleScroll">
           <div ref="board">
             <Message
-              v-for="msg in messages"
+              v-for="msg in currentCamp.messages"
               ref="messages"
               :key="msg.id"
               :message="msg"
@@ -61,7 +88,6 @@
             'task',
             'quote',
           ]"
-          class="md-editor"
         />
         <div class="md-control">
           <CloseBold
@@ -81,6 +107,7 @@
           preview="true"
           tabWidth="4"
         />
+        <el-divider direction="vertical"></el-divider>
         <p ref="emoji" style="font-size: 20px">😊</p>
         <p @click="uploadImages">
           <svg class="chat-icon" viewBox="0 0 48 48" fill="none">
@@ -143,7 +170,7 @@
 <script>
 import ChatMessage from "./Messages/ChatMessage.vue";
 import RegularButton from "../RegularButton.vue";
-import { UserAPI, FileAPI } from "@/scripts/api.js";
+import { UserAPI, FileAPI, CampAPI } from "@/scripts/api.js";
 import { CurrentUser, EventTypes } from "@/scripts/session.js";
 import { eventBus } from "@/scripts/EventBus.js";
 import { cache } from "@/scripts/Cache.js";
@@ -172,55 +199,33 @@ export default {
       isListLoaded: false,
       isMessageLoaded: false,
       payload: {},
-      messages: [
-        { id: 1, userID: 2, type: "text", content: "Hello, Vue!" },
-        {
-          id: 2,
-          userID: 2,
-          type: "image",
-          src: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1k3yxk.img?w=530&h=530&m=6&x=138&y=74&s=110&d=110",
-        },
-        { id: 3, userID: 1, type: "text", content: "Hello, Campfire!😁" },
-        {
-          id: 4,
-          userID: 1,
-          type: "task",
-          title: "新任务",
-          beginAt: "昨天",
-          endAt: "今天",
-          owner: "electric",
-        },
-        {
-          id: 5,
-          userID: 2,
-          type: "anno",
-          title: "公告",
-          beginAt: "昨天",
-          endAt: "今天",
-          content: "大家好！",
-        },
-      ],
       camps: [],
-      currentCamp: {},
+      currentCamp: {
+        id: 0,
+        messages: [],
+      },
       showEmojiPanel: false,
       emojis: emoji,
       toSendMD: "",
       toSend: "",
+      isDefault: true,
     };
   },
 
   created() {
     eventBus.subscribe("rend", this.handleRend);
     this.fetchCampData();
-    this.fetchMessageData();
+    // this.fetchMessageData();
   },
 
-  mounted() {
-    setTimeout(() => {
-      let bar = this.$refs.bar;
-      let board = this.$refs.board;
-      bar.scrollTo(0, board.clientHeight);
-    }, 1000);
+  watch: {
+    isMessageLoaded(newValue) {
+      if (newValue === true) {
+        let bar = this.$refs.bar;
+        let board = this.$refs.board;
+        bar.scrollTo(0, board.clientHeight);
+      }
+    },
   },
 
   beforeDestroy() {
@@ -229,6 +234,9 @@ export default {
 
   methods: {
     handleWindowClick(event) {
+      if (!this.$refs.emoji) {
+        return;
+      }
       const emojiRect = this.$refs.emoji.getBoundingClientRect();
       const emojiLeft = emojiRect.left;
       const emojiTop = emojiRect.top;
@@ -249,14 +257,20 @@ export default {
 
     fetchCampData() {
       this.isListLoaded = false;
-      const privates = UserAPI.privateCamps().then((response) => {
-        console.log(response);
-      });
-      const publics = UserAPI.publicCamps().then((response) => {
-        console.log(response);
-      });
-      this.camps = privates + publics;
-      this.isListLoaded = true;
+      Promise.all([UserAPI.privateCamps(), UserAPI.publicCamps()]).then(
+        (responses) => {
+          const privateCampsResponse = responses[0];
+          const publicCampsResponse = responses[1];
+          console.log(privateCampsResponse);
+          console.log(publicCampsResponse);
+
+          this.camps = privateCampsResponse.data.concat(
+            publicCampsResponse.data
+          );
+
+          this.isListLoaded = true;
+        }
+      );
     },
 
     handleRend(payload) {
@@ -272,6 +286,19 @@ export default {
     },
 
     createCamp() {},
+
+    selectCamp(index) {
+      this.isDefault = false;
+      this.isMessageLoaded = false;
+      CampAPI.campInfo(this.camps[index].id).then((response) => {
+        this.currentCamp = response.data;
+        this.currentCamp.index = index;
+        this.currentCamp.type = "camp";
+        eventBus.publish("rend", this.currentCamp);
+        this.isMessageLoaded = true;
+        console.log(response.data);
+      });
+    },
 
     loadMoreMessages() {
       this.fetchMessageData();
@@ -293,6 +320,10 @@ export default {
     },
 
     handleSend() {
+      if (this.toSend == "") {
+        ElMessage.error("不可发送空消息");
+        return;
+      }
       this.showEmojiPanel = false;
       let msg = {
         eType: EventTypes().TextMessageEvent,
@@ -302,10 +333,15 @@ export default {
         timestamp: new Date().toISOString(),
       };
       CurrentUser.session.send(msg);
+      this.currentCamp.messages.push(msg);
       this.toSend = "";
     },
 
     handleMarkdownSend() {
+      if (this.toSendMD == "") {
+        ElMessage.error("不可发送空消息");
+        return;
+      }
       this.showEmojiPanel = false;
       let msg = {
         eType: EventTypes().MarkdownMessageEvent,
@@ -315,7 +351,7 @@ export default {
         timestamp: Date.now(),
       };
       CurrentUser.session.send(msg);
-      // cache.messages.set()
+      this.currentCamp.messages.push(msg);
       this.toSendMD = "";
     },
 
@@ -368,7 +404,14 @@ export default {
 
   #list {
     width: 0% !important;
+
+    .camp-brief,
+    .top,
+    .top div {
+      opacity: 0;
+    }
   }
+
   .md-submit {
     height: 50% !important;
     width: 100% !important;
@@ -403,6 +446,46 @@ export default {
     transition: width 0.1s;
 
     border-right: 1px solid theme-color(border);
+
+    .top {
+      height: 40px;
+      width: 100%;
+
+      border-bottom: 1px solid theme-color(border);
+      background-color: theme-color(background-upper);
+
+      padding: 0 10px;
+
+      box-sizing: border-box;
+
+      display: grid;
+      grid-template-columns: 8fr 1fr;
+
+      div {
+        height: 40px;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+          background-color: theme-color(theme);
+          color: theme-color(white);
+        }
+      }
+
+      .top-left {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+      }
+
+      .panel-icon {
+        height: 25px;
+
+        border-radius: 8px;
+      }
+    }
+
     .camp-brief {
       height: 5em;
       width: 100%;
@@ -414,17 +497,25 @@ export default {
       box-sizing: border-box;
       padding: 10px;
 
-      border-width: 1px;
       border-color: theme-color(text);
+      border-top: 1px solid theme-color(border);
+      border-bottom: 1px solid theme-color(border);
 
       transition: all 0.1s;
       gap: 10px;
-      &:hover {
-        background-color: theme-color(grey);
-      }
+
+      cursor: pointer;
 
       * {
         margin: 0;
+      }
+
+      &:hover {
+        background-color: theme-color(background-upper);
+      }
+
+      &.active {
+        background-color: theme-color(background);
       }
 
       div {
@@ -446,6 +537,21 @@ export default {
   flex-direction: column;
 }
 
+#no-chat {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
+
+  span {
+    color: theme-color(theme);
+  }
+}
+
 #board {
   height: 100%;
   width: 100%;
@@ -455,6 +561,10 @@ export default {
 
 .md-editor {
   height: 100% !important;
+
+  // :deep(.md-editor-preview-wrapper) {
+  //   display: flex;
+  // }
 }
 
 .md-submit {
@@ -470,7 +580,7 @@ export default {
   width: 30px;
   display: flex !important;
   flex-direction: column;
-  background-color: theme-color(text);
+  background-color: theme-color(junior);
   gap: 2px;
 
   *:hover {
@@ -506,7 +616,6 @@ export default {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-    padding: 10px;
     border: none;
     text-align: left;
     font-family: "微软雅黑";

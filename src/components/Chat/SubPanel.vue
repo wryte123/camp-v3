@@ -1,16 +1,12 @@
 <template>
   <element id="sub-panel">
     <div id="topbar">
-      <el-icon
-        id="enlarge"
-        class="icon"
-        @click="handleExpand"
-      >
+      <el-icon id="enlarge" class="icon" @click="handleExpand">
         <ArrowLeftBold />
       </el-icon>
       <div />
       <el-icon
-        v-show="!isDefault"
+        v-show="!isDefault && this.payload.type != 'camp'"
         id="back"
         class="icon"
         @click="defaultComponent"
@@ -18,24 +14,23 @@
         <CloseBold />
       </el-icon>
     </div>
-    <el-skeleton
-      v-if="!loaded"
-      :rows="10"
-      animated
-    />
-    <component
-      :is="subComponent"
-      v-else
-      :rend-data="payload"
-    />
+    <div v-if="isDefault" class="loading-view">
+      <Loading />
+    </div>
+    <component :is="subComponent" v-else :rendData="payload" />
   </element>
 </template>
 
 <script>
 import { defineAsyncComponent } from "vue";
 import { eventBus } from "@/scripts/EventBus.js";
+import Loading from "@/components/Loading.vue";
 
 export default {
+  components: {
+    Loading,
+  },
+
   data() {
     return {
       payload: {},
@@ -73,6 +68,9 @@ export default {
         anno: defineAsyncComponent(() =>
           import("@/components/Camp/AnnoPanel.vue")
         ),
+        camp: defineAsyncComponent(() =>
+          import("@/components/Camp/CampPanel.vue")
+        ),
       };
       if (!typeMap[this.payload.type]) {
         this.defaultComponent();
@@ -83,12 +81,8 @@ export default {
       this.loaded = true;
     },
     defaultComponent() {
-      this.loaded = false;
-      this.subComponent = defineAsyncComponent(() =>
-        import("@/components/Camp/CampPanel.vue")
-      );
       this.isDefault = true;
-      this.loaded = true;
+      this.loaded = false;
     },
     handleExpand() {
       this.$emit("toggle");
@@ -118,6 +112,7 @@ export default {
 #sub-panel {
   width: 25%;
   border-left: 1px solid theme-color(border);
+  background-color: theme-color(white);
 
   transition: width 0.1s;
 
@@ -132,8 +127,6 @@ export default {
     .icon {
       height: 100%;
       width: 50px;
-      background-color: rgba(255, 255, 255, 0);
-
       transition: all 0.1s ease;
     }
 
@@ -141,7 +134,6 @@ export default {
       height: 100%;
       width: 90%;
 
-      background-color: rgba(255, 255, 255, 0);
       display: flex;
       justify-content: center;
       align-items: center;

@@ -15,13 +15,17 @@
                 ></el-breadcrumb-item
               >
             </el-breadcrumb>
-            <div class="end">管理模式<el-switch v-model="isManageMode" /></div>
-            <div id="projects">
+            <PanelHeader
+              @manage="isManageMode = !isManageMode"
+              title="项目"
+              text="这里是您项目的总览，点选对应的卡片来查看详情，并通过管理模式来进行关键操作。"
+            />
+            <div id="projects" v-loading="!isLoaded">
               <div
                 v-for="project in projects"
-                :key="project.projectID"
+                :key="project.id"
                 class="project-item"
-                @click="this.$router.push(`/project/${project.projectID}`)"
+                @click="this.$router.push(`/projects/${project.id}`)"
               >
                 <div class="item-start">
                   <h2>{{ project.title }}</h2>
@@ -47,25 +51,33 @@
             <el-breadcrumb-item>
               <a @click="$router.push('/')">Campfire</a>
             </el-breadcrumb-item>
-            <el-breadcrumb-item>
-              <a @click="$router.push('/projects')">项目</a>
-            </el-breadcrumb-item>
+            <el-breadcrumb-item> 项目 </el-breadcrumb-item>
             <el-breadcrumb-item>新建项目</el-breadcrumb-item>
           </el-breadcrumb>
-          <h1>创建新的项目</h1>
-          <el-form
-            id="project-form"
-            :model="projectToCreate"
-            label-width="auto"
-          >
-            <el-form-item label="项目名称">
-              <el-input v-model="projectToCreate.title" />
-            </el-form-item>
-            <el-form-item label="简介">
-              <el-input v-model="projectToCreate.description" type="textarea" />
-            </el-form-item>
-          </el-form>
-          <Button label="创建" @click="createProject" /></section
+          <PanelHeader
+            title="创建新的项目"
+            text="在此创建新的项目，并邀请新的成员，项目默认对他人不可见。"
+            :manage="false"
+            :filter="false"
+          />
+          <div class="create-panel">
+            <h1>项目名称</h1>
+            <el-input
+              v-model="projectToCreate.title"
+              style="width: 240px"
+              size="large"
+              ><template #append>.git</template></el-input
+            >
+            <h1>项目描述</h1>
+            <el-input
+              v-model="projectToCreate.description"
+              type="textarea"
+              height="400px"
+            />
+            <h1>邀请成员</h1>
+            <InviteBoard />
+            <Button label="创建" @click="createProject" />
+          </div></section
       ></el-tab-pane>
     </el-tabs>
   </main>
@@ -73,6 +85,7 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue";
+import PanelHeader from "@/components/PanelHeader.vue";
 import TinyUserCard from "@/components/User/TinyUserCard.vue";
 import RegularButton from "@/components/RegularButton.vue";
 import { UserAPI, ProjectAPI } from "@/scripts/api.js";
@@ -82,6 +95,7 @@ export default {
     Bar: SideBar,
     Button: RegularButton,
     TinyUserCard,
+    PanelHeader,
   },
 
   data() {
@@ -93,7 +107,7 @@ export default {
     };
   },
 
-  mounted() {
+  created() {
     this.projectsOfUser();
   },
 
@@ -161,14 +175,12 @@ main {
 
   display: flex;
   flex-direction: row;
-  gap: 20px;
 }
 
 #projects-main {
-  width: 70%;
-  height: 100%;
+  width: 85%;
+  height: 100vh;
   padding: 50px 100px;
-  margin-left: 100px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -187,6 +199,7 @@ main {
   }
 
   #projects {
+    min-height: 150px;
     box-sizing: border-box;
     padding: 20px;
     border-left: 1px solid theme-color(border);
@@ -234,6 +247,8 @@ main {
         justify-items: center;
         align-items: center;
 
+        border: 1px solid theme-color(border);
+
         &:hover {
           background-color: theme-color(theme);
         }
@@ -245,19 +260,16 @@ main {
         position: relative;
         left: -3px;
         top: -3px;
-        box-shadow: 1px 1px 3px 3px theme-color(border);
+        box-shadow: 1px 2px 2px 2px theme-color(border);
       }
     }
   }
 }
 
 #project-create {
-  width: 80%;
+  width: 85%;
   height: 100vh;
   padding: 50px 100px;
-  margin-left: 100px;
-  margin-right: 15%;
-
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -265,6 +277,20 @@ main {
 
   * {
     margin: 0;
+  }
+
+  .create-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-sizing: border-box;
+    padding: 20px;
+
+    align-items: flex-start;
+
+    border-left: 1px solid theme-color(border);
+    border-right: 1px solid theme-color(border);
   }
 
   #proj-form {
