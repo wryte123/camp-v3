@@ -13,6 +13,10 @@ body {
   margin: 0;
   color: theme-color(text);
   overflow: hidden;
+
+  * {
+    margin: 0;
+  }
 }
 
 #app {
@@ -90,5 +94,12 @@ body {
   &:hover {
     opacity: 0.7;
   }
+}
+
+column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
 }
 </style>

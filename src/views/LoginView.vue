@@ -1,12 +1,15 @@
 <template>
   <main id="login-wrapper">
+    <div id="login-view">
+      <div id="slogan">
+        <h1>Campfire</h1>
+        <h2>以文会友。</h2>
+      </div>
+    </div>
     <section id="login-main">
-      <div id="login-view">
-        <div class="back" @click="$router.push('/')">
-          <ArrowLeftBold class="nav-icon" />
-          返回
-        </div>
-        <img src="@/assets/login_view.jpg" />
+      <div class="back" @click="$router.push('/')">
+        <ArrowLeftBold class="nav-icon" />
+        返回
       </div>
       <div id="login-panel">
         <el-tabs>
@@ -15,7 +18,7 @@
               class="login-panel"
               label-position="top"
               :model="loginForm"
-              :rules="loginRules"
+              :rules="rules"
             >
               <el-form-item label="账号" size="large" prop="email">
                 <el-input v-model="loginForm.email" placeholder="输入邮箱..." />
@@ -39,7 +42,7 @@
               class="login-panel"
               label-position="top"
               :model="registerForm"
-              :rules="registerRules"
+              :rules="rules"
             >
               <el-form-item label="邮箱" size="large" prop="email">
                 <el-input
@@ -91,6 +94,7 @@ import { ElMessage } from "element-plus";
 import RegularButton from "@/components/RegularButton.vue";
 import { LoginAPI } from "@/scripts/api";
 import { userInit } from "@/scripts/session";
+import { reactive } from "vue";
 
 export default {
   components: {
@@ -99,7 +103,7 @@ export default {
 
   data() {
     return {
-      rules: {
+      rules: reactive({
         email: [
           { required: true, message: "请输入电子邮箱", trigger: "blur" },
           { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" },
@@ -110,16 +114,20 @@ export default {
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
           {
-            pattern: /^\S{6,20}$/,
-            message: "密码长度在 6 到 20 个字符",
+            pattern: /^\S{8,20}$/,
+            message: "密码长度在 8 到 20 个字符",
             trigger: "blur",
           },
         ],
         confirmPassword: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
-          { validator: this.validatePasswordConfirm, trigger: "blur" },
+          {
+            validator: this.validatePasswordConfirm,
+            message: "两次输入密码不一致",
+            trigger: "blur",
+          },
         ],
-      },
+      }),
       loginForm: {
         email: "",
         password: "",
@@ -150,12 +158,15 @@ export default {
           ElMessage.success("登录成功");
           console.log(response);
           setTimeout(() => {
-            this.$router.push("/chat");
+            this.$router.replace("/chat");
           }, 1000);
         })
         .catch((error) => {
-          ElMessage.error("登录失败，请检查电子邮箱和密码");
-          console.log(error);
+          if (error.response.status == 400) {
+            ElMessage.error("登录失败，请检查电子邮箱和密码");
+          } else {
+            ElMessage.error("服务器错误");
+          }
         });
     },
 
@@ -168,7 +179,7 @@ export default {
           console.log(response);
         })
         .catch((error) => {
-          if (error.code == 400) {
+          if (error.response.status == 400) {
             ElMessage.error("注册失败，请检查电子邮箱和密码");
           } else {
             ElMessage.error("服务器错误");
@@ -192,35 +203,51 @@ export default {
 
 #login-wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
   height: 100vh;
 
-  #login-main {
-    height: 600px;
-    width: 800px;
-    border: 1px solid theme-color(border);
-    border-radius: 30px;
+  #login-view {
+    height: 101vh;
+    width: 75%;
 
-    display: flex;
-    flex-direction: row;
+    background-image: url("@/assets/login_view.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    box-shadow: 3px 3px 5px 3px theme-color(border);
+    #slogan {
+      position: relative;
+      top: 25%;
+      left: 10%;
 
-    #login-view {
-      height: 100%;
-      width: 40%;
+      text-align: left;
 
-      img {
-        height: 100%;
-        width: 100%;
-        border-radius: 30px 0px 0px 30px;
+      h1 {
+        font-size: 64px;
+        color: theme-color(theme);
+      }
+
+      h2 {
+        font-size: 48px;
+        color: theme-color(background);
       }
     }
+  }
 
+  #login-main {
+    height: 100%;
+    width: 25%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 40px;
+
+    background-color: theme-color(background-upper);
     #login-panel {
-      height: 100%;
-      width: 60%;
+      width: 100%;
 
       box-sizing: border-box;
       padding: 10% 30px;
@@ -229,16 +256,11 @@ export default {
 }
 
 .back {
-  margin-left: 8px;
-  margin-top: 10px;
-  position: absolute;
-
-  color: white;
-
   display: flex;
   flex-direction: row;
 
   align-items: center;
+  color: theme-color(junior);
 
   cursor: pointer;
 }

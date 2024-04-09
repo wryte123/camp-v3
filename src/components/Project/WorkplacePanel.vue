@@ -1,30 +1,30 @@
 <template>
   <element id="workplace-main" v-loading="!isLoaded">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item>
-        <a @click="$router.push('/')">Campfire</a>
-      </el-breadcrumb-item>
-      <el-breadcrumb-item>
-        <a @click="$router.push('/projects')">项目</a>
-      </el-breadcrumb-item>
-      <el-breadcrumb-item>{{ project.title }}</el-breadcrumb-item>
       <el-breadcrumb-item>Workplace</el-breadcrumb-item>
-      <el-breadcrumb-item v-for="(dir, index) in path" :key="index">
-        {{ dir.name }}
+      <el-breadcrumb-item
+        ><a @click="dir('')">{{ project.title }}</a></el-breadcrumb-item
+      >
+      <el-breadcrumb-item
+        v-for="(name, index) in currentDir.path.split('/')"
+        :key="index"
+        >{{ name }}
       </el-breadcrumb-item>
     </el-breadcrumb>
     <div id="workplace-bar">
       <el-select
-        v-model="branchesProp"
+        v-model="branch"
         placeholder="选择分支..."
         filterable
         size="large"
-        :loading="!branchesProp"
+        :loading="!branches"
+        @change="dir('/')"
       >
         <el-option
-          v-for="(branch, index) in branchesProp"
+          v-for="(branch, index) in branches"
           :key="index"
           :label="branch.name"
+          :value="branch"
         />
         <template #loading>
           <svg class="circular" viewBox="0 0 50 50">
@@ -56,6 +56,11 @@
       </div>
       <div v-if="isGrid" id="file-grid">
         <GridFile
+          v-show="currentDir.path !== ''"
+          :file="{ isDirectory: true, name: '..' }"
+          @click="dir('..')"
+        />
+        <GridFile
           v-for="(file, index) in currentDir.files"
           :key="index"
           :file="file"
@@ -63,6 +68,11 @@
         />
       </div>
       <tbody v-else id="file-list">
+        <File
+          v-show="currentDir.path !== ''"
+          :file="{ isDirectory: true, name: '..' }"
+          @click="dir('..')"
+        />
         <File
           v-for="(file, index) in currentDir.files"
           :key="index"
@@ -75,10 +85,11 @@
 </template>
 
 <script>
-// import { GitAPI } from "@/scripts/api.js";
+import { GitAPI } from "@/scripts/api.js";
 import File from "@/components/Project/File.vue";
 import GridFile from "@/components/Project/GridFile.vue";
 import TinyUserCard from "../User/TinyUserCard.vue";
+import ElMessage from "element-plus";
 
 export default {
   components: {
@@ -100,78 +111,65 @@ export default {
     return {
       isLoaded: false,
       isGrid: false,
-      root: {
+      currentDir: {
+        name: "",
         isDirectory: true,
-        files: [
-          {
-            name: "src",
-            isDirectory: true,
-            files: [
-              {
-                name: "main.go",
-                isDirectory: false,
-              },
-              {
-                name: "handlers",
-                isDirectory: true,
-                files: [
-                  {
-                    name: "user_handler.go",
-                    isDirectory: false,
-                  },
-                  {
-                    name: "post_handler.go",
-                    isDirectory: false,
-                  },
-                ],
-              },
-              {
-                name: "models",
-                isDirectory: true,
-                files: [
-                  {
-                    name: "user_model.go",
-                    isDirectory: false,
-                  },
-                  {
-                    name: "post_model.go",
-                    isDirectory: false,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+        path: "",
+        files: [],
       },
-      currentDir: {},
       currentID: this.$route.params.project_id,
-      branchesProp: this.branches,
-      path: [],
+      branch: this.branches[0],
     };
   },
 
   mounted() {
-    this.enterFile(this.root);
+    console.log(this.project);
+    this.dir("");
   },
 
   methods: {
-    dir() {
+    dir(path) {
+      if (path.startsWith("/")) {
+        path = path.substring(1);
+      }
+
+      if (path === "..") {
+        let last = this.currentDir.path.lastIndexOf("/");
+        path = `${this.currentDir.path.substring(0, last)}`;
+      }
       this.isLoaded = false;
-      //   GitAPI.dir(this.currentID, this.currentBranch, path).then((response) => {
-      //     this.directory = response.data;
-      //     this.isLoaded = true;
-      //     console.log(response.data);
-      //   });
-      // .catch(() => {
-      //   ElMessage.error("获取工作区失败");
-      //   this.$router.back();
-      // });
+      let branch = this.branches[0].name;
+      if (this.branch) {
+        branch = this.branch.name;
+      }
+      GitAPI.dir(this.currentID, branch, path)
+        .then((response) => {
+          this.currentDir.path = path;
+          this.currentDir.files = response.data.files.sort((a, b) => {
+            if (a.isDirectory && !b.isDirectory) {
+              return -1;
+            }
+            if (b.isDirectory && !a.isDirectory) {
+              return 1;
+            }
+            return 0;
+          });
+          this.isLoaded = true;
+          console.log(response.data.files);
+        })
+        .catch(() => {
+          ElMessage.error("获取工作区失败");
+          this.$router.back();
+        });
       this.isLoaded = true;
+    },
+    openFile(file) {
+      return file;
     },
     enterFile(file) {
       if (file.isDirectory) {
         this.currentDir = file;
-        this.dir();
+        this.dir(`${file.path}/${file.name}`);
       } else {
         this.openFile(file);
       }
@@ -184,7 +182,7 @@ export default {
 @use "@/styles/global.scss" as *;
 
 #workplace-main {
-  height: 500px;
+  min-height: 500px;
   width: 100%;
 
   display: flex;

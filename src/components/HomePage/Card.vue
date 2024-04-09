@@ -34,8 +34,6 @@ element {
 
   margin-bottom: 20px;
 
-  background-color: theme-color(white);
-
   border-radius: 10px;
   border-top: 4px solid theme-color(primary);
   border-bottom: 4px solid theme-color(primary);

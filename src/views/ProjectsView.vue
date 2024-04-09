@@ -38,46 +38,49 @@
                 <button
                   v-show="isManageMode"
                   class="delete"
-                  @click="deleteProject"
+                  @click="deleteProject(project, $event)"
                 >
                   <el-icon><Delete color="white" /></el-icon>
                 </button>
               </div>
             </div></section></el-scrollbar
       ></el-tab-pane>
-      <el-tab-pane label="新建">
-        <section id="project-create">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item>
-              <a @click="$router.push('/')">Campfire</a>
-            </el-breadcrumb-item>
-            <el-breadcrumb-item> 项目 </el-breadcrumb-item>
-            <el-breadcrumb-item>新建项目</el-breadcrumb-item>
-          </el-breadcrumb>
-          <PanelHeader
-            title="创建新的项目"
-            text="在此创建新的项目，并邀请新的成员，项目默认对他人不可见。"
-            :manage="false"
-            :filter="false"
-          />
-          <div class="create-panel">
-            <h1>项目名称</h1>
-            <el-input
-              v-model="projectToCreate.title"
-              style="width: 240px"
-              size="large"
-              ><template #append>.git</template></el-input
-            >
-            <h1>项目描述</h1>
-            <el-input
-              v-model="projectToCreate.description"
-              type="textarea"
-              height="400px"
+      <el-tab-pane label="新建"
+        ><el-scrollbar>
+          <section id="project-create">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item>
+                <a @click="$router.push('/')">Campfire</a>
+              </el-breadcrumb-item>
+              <el-breadcrumb-item> 项目 </el-breadcrumb-item>
+              <el-breadcrumb-item>新建项目</el-breadcrumb-item>
+            </el-breadcrumb>
+            <PanelHeader
+              title="创建新的项目"
+              text="在此创建新的项目，并邀请新的成员，项目默认对他人不可见。"
+              :manage="false"
+              :filter="false"
             />
-            <h1>邀请成员</h1>
-            <InviteBoard />
-            <Button label="创建" @click="createProject" />
-          </div></section
+            <div class="create-panel">
+              <h1>项目名称</h1>
+              <el-input
+                v-model="projectToCreate.title"
+                style="width: 240px"
+                size="large"
+                ><template #append>.git</template></el-input
+              >
+              <h1>项目描述</h1>
+              <el-input
+                v-model="projectToCreate.description"
+                type="textarea"
+                style="width: 30%"
+                :autosize="{ minRows: 2, maxRows: 10 }"
+                resize="none"
+              />
+              <h1>邀请成员</h1>
+              <InvitePanel />
+              <Button label="创建" @click="createProject" />
+            </div></section></el-scrollbar
       ></el-tab-pane>
     </el-tabs>
   </main>
@@ -88,6 +91,7 @@ import SideBar from "@/components/SideBar.vue";
 import PanelHeader from "@/components/PanelHeader.vue";
 import TinyUserCard from "@/components/User/TinyUserCard.vue";
 import RegularButton from "@/components/RegularButton.vue";
+import InvitePanel from "@/components/Project/InvitePanel.vue";
 import { UserAPI, ProjectAPI } from "@/scripts/api.js";
 import { ElMessage, ElMessageBox } from "element-plus";
 export default {
@@ -96,6 +100,7 @@ export default {
     Button: RegularButton,
     TinyUserCard,
     PanelHeader,
+    InvitePanel,
   },
 
   data() {
@@ -141,14 +146,14 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        ProjectAPI.disableProject(project.projectID)
+        ProjectAPI.disableProject(project.id)
           .then(() => {
             ElMessage({
               type: "success",
               message: "删除成功",
             });
             const index = this.projects.findIndex(
-              (item) => item.projectID === project.projectID
+              (item) => item.id === project.id
             );
             if (index !== -1) {
               this.projects.splice(index, 1);
@@ -178,8 +183,9 @@ main {
 }
 
 #projects-main {
-  width: 85%;
+  width: 100%;
   height: 100vh;
+  box-sizing: border-box;
   padding: 50px 100px;
   display: flex;
   flex-direction: column;
@@ -267,8 +273,9 @@ main {
 }
 
 #project-create {
-  width: 85%;
+  width: 100%;
   height: 100vh;
+  box-sizing: border-box;
   padding: 50px 100px;
   display: flex;
   flex-direction: column;

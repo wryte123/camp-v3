@@ -1,86 +1,73 @@
-class DefaultCache {
+import { MessageAPI } from "./api";
+
+class MsgCache {
     constructor() {
         this.cache = new Map();
-    }
 
-    set(key, value) {
-        this.cache.set(key, value);
-    }
-
-    get(key) {
-        return this.cache.get(key);
-    }
-
-    has(key) {
-        return this.cache.has(key);
-    }
-    delete(key) {
-        return this.cache.delete(key);
-    }
-}
-
-class SafeCache {
-    constructor() {
-        this.data = {};
-        this.loadFromLocalStorage();
-        window.addEventListener('beforeunload', () => {
-            this.saveToLocalStorage();
+        eventBus.subscribe('message', (message) => {
+            this.push(message.campID, message);
         });
     }
 
-    set(key, value) {
-        this.data[key] = value;
-    }
-
-    get(key) {
-        return this.data[key];
-    }
-
-    saveToLocalStorage() {
-        localStorage.setItem('cache', JSON.stringify(this.data));
-    }
-
-    loadFromLocalStorage() {
-        const cachedData = localStorage.getItem('cache');
-        if (cachedData) {
-            this.data = JSON.parse(cachedData);
+    set(campID, messages) {
+        if (!this.cache.has(campID)) {
+            this.cache.set(campID, {
+                messages: [],
+            });
         }
-    }
-}
 
-class Cache {
-    constructor() {
-        this.userCache = new SafeCache();
-        this.campCache = new DefaultCache();
-        this.projCache = new DefaultCache();
-        this.msgCache = new DefaultCache();
+        const record = this.cache.get(campID);
+        record.messages = messages.sort((a, b) => a.timestamp - b.timestamp);
+        this.cache.set(campID, record);
     }
 
-    users() {
-        return this.userCache;
+    prepend(campID, message) {
+        if (!this.cache.has(campID)) {
+            this.cache.set(campID, {
+                messages: [],
+            });
+        }
+
+        const record = this.cache.get(campID);
+        record.messages.unshift(message);
+        this.cache.set(campID, record);
     }
 
-    camps() {
-        return this.campCache;
+    push(campID, message) {
+        if (!this.cache.has(campID)) {
+            this.cache.set(campID, {
+                messages: [],
+            });
+        }
+
+        const record = this.cache.get(campID);
+        record.messages.push(message);
+        this.cache.set(campID, record);
     }
 
-    projects() {
-        return this.projCache;
+    get(campID) {
+        return this.cache.get(campID)?.messages || [];
     }
 
-    messages() {
-        return this.msgCache;
+    has(campID) {
+        return this.cache.has(campID);
+    }
+
+    delete(campID) {
+        return this.cache.delete(campID);
+    }
+
+    fetchMessages(campID) {
+        let messages = [];
+        MessageAPI.getMessageRecord(campID)
     }
 
     static getInstance() {
-        if (!Cache.instance) {
-            Cache.instance = new Cache();
+        if (!MsgCache.instance) {
+            MsgCache.instance = new MsgCache();
         }
-        return Cache.instance;
+        return MsgCache.instance;
     }
 }
 
-
-export const cache = Cache.getInstance();
-
-
+export const cache = MsgCache.getInstance();

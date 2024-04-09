@@ -20,8 +20,8 @@ export const UserAPI = {
     async userInfo(userID) {
         return getData(`/user/${userID}`, {})
     },
-    async findUsersByName(data) {
-        return getData("/user/search", data)
+    async findUsersByName(keyword) {
+        return getData(`/user/search?keyword=${keyword}`, {})
     },
     async privateCamps() {
         return getData("/user/camps/private", {});
@@ -29,11 +29,11 @@ export const UserAPI = {
     async publicCamps() {
         return getData("/user/camps", {});
     },
-    async projects(data) {
-        return getData("/user/projects", data);
+    async projects() {
+        return getData("/user/projects", {});
     },
-    async tasks(projID, data) {
-        return getData(`/user/project/${projID}/tasks`, data);
+    async tasks() {
+        return getData(`/user/tasks`, {});
     },
     async editUserInfo(data) {
         return postData("/user/edit", data);
@@ -53,17 +53,17 @@ export const ProjectAPI = {
     async disableProject(projID) {
         return postData(`/project/${projID}/del`, {});
     },
-    async publicCamps(projID, data) {
-        return getData(`/project/${projID}/camps`, data);
+    async publicCamps(data) {
+        return getData(`/project/${data.projID}/camps`, data);
     },
     async createProject(data) {
         return postData("/project/new_proj", data);
     },
-    async editProjectInfo(projID, data) {
-        return postData(`/project/${projID}/edit`, data);
+    async editProjectInfo(data) {
+        return postData(`/project/${data.projID}/edit`, data);
     },
-    async createCamp(projID, data) {
-        return postData(`/project/${projID}/new_camp`, data);
+    async createCamp(data) {
+        return postData(`/project/${data.projID}/new_camp`, data);
     }
 };
 
@@ -72,13 +72,13 @@ export const TaskAPI = {
         return postData(`/project/${data.projID}/new_task`, data);
     },
     async editTaskInfo(data) {
-        return postData(`/project/${data.projID}/${data.taskID}/edit`, data);
+        return postData(`/project/${data.projID}/tasks/${data.taskID}/edit`, data);
     },
     async deleteTask(data) {
-        return postData(`/project/${data.projID}/${data.taskID}/del`, data);
+        return postData(`/project/${data.projID}/tasks/${data.taskID}/del`, data);
     },
     async taskInfo(data) {
-        return getData(`/project/${data.projID}/${data.taskID}`, data);
+        return getData(`/project/${data.projID}/tasks/${data.taskID}`, data);
     },
     async tasks(projID) {
         return getData(`/project/${projID}/tasks`, {});

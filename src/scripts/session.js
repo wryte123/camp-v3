@@ -1,6 +1,6 @@
 import { eventBus } from './EventBus.js';
 import { reactive } from "vue";
-import ElMessage from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 
 const saveUserInfoToLocal = (userInfo) => {
     localStorage.setItem("currentUser", JSON.stringify(userInfo));
@@ -83,8 +83,16 @@ class Session {
         if (message.data == "pong") {
             console.log("from server: pong!");
             return
+        } else if (message.eType == EventTypes().CampInvitationEvent ||
+            message.eType == EventTypes().ProjectInvitationEvent) {
+            eventBus.publish("invitation", message)
+            ElNotification({
+                title: "新的邀请消息",
+                position: 'bottom-right',
+            })
+        } else {
+            eventBus.publish("message", message);
         }
-        eventBus.publish("message", message);
     }
 
     send(data) {

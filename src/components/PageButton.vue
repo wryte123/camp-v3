@@ -1,10 +1,7 @@
 <template>
-  <button
-    :class="{ colored: isColored }"
-    @click="handleClick"
-  >
-    {{ label }}
-  </button>
+  <element :class="{ colored: isColored }" @click="handleClick" class="button">
+    <p>{{ label }}</p>
+  </element>
 </template>
 
 <script>
@@ -38,19 +35,19 @@ export default {
 @use "@/styles/global.scss" as *;
 
 .colored {
-  border-top: 3px solid theme-color(primary);
-  border-bottom: 3px solid theme-color(primary);
-  border-left: 3px solid theme-color(primary);
-  border-right: 3px solid theme-color(primary);
-  color: theme-color(primary);
+  border-top: 3px solid theme-color(theme);
+  border-bottom: 3px solid theme-color(theme);
+  border-left: 3px solid theme-color(theme);
+  border-right: 3px solid theme-color(theme);
+  color: theme-color(theme);
 
   &:hover {
-    background-color: theme-color(primary);
-    color: #fff;
+    background-color: theme-color(theme);
+    color: theme-color(white);
   }
 }
 
-button {
+.button {
   width: 200px;
   height: 60px;
   padding: 10px 20px;
@@ -63,15 +60,13 @@ button {
   border-right: 3px solid theme-color(text);
 
   color: theme-color(text);
-  background-color: theme-color(white);
 
-  text-align: center;
-  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, opacity 0.2s;
 
-  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  display: inline-block;
-  margin: 4px 2px;
   cursor: pointer;
 
   &:hover {

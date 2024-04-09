@@ -35,6 +35,8 @@ export default {
   border-top: 1px solid theme-color(border);
   border-bottom: 1px solid theme-color(border);
 
+  margin-bottom: -1px;
+
   &:hover {
     background-color: theme-color(background);
   }

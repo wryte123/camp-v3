@@ -2,12 +2,9 @@
   <element>
     <h1>Project <span>Campfire</span></h1>
     <p>简便，易上手的项目版本控制及协作系统</p>
-    <div>
-      <Button label="快速上手" />
-      <Button
-        label="开始使用"
-        @clickEvent="$router.push('/login')"
-      />
+    <div class="buttons">
+      <Button label="快速上手" colored />
+      <Button label="开始使用" @clickEvent="$router.push('/login')" />
     </div>
   </element>
 </template>
@@ -36,6 +33,7 @@ element {
   display: flex;
   flex-direction: column;
   text-align: left;
+  gap: 70px;
 
   h1 {
     font-size: 64px;
@@ -47,11 +45,12 @@ element {
 
   p {
     font-size: 36px;
-    padding-bottom: 2em;
   }
 
-  button {
-    margin: 0 10px;
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
   }
 }
 </style>

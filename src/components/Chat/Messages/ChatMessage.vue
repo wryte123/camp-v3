@@ -54,13 +54,13 @@ export default {
           return defineAsyncComponent(() => import("./TextMessage.vue"));
         case EventTypes().ImageMessageEvent:
           return defineAsyncComponent(() => import("./ImageMessage.vue"));
-        case EventTypes().TaskMessageEvent:
+        case EventTypes().NewTaskEvent:
           return defineAsyncComponent(() => import("./TaskMessage.vue"));
         case EventTypes().AnnoMessageEvent:
           return defineAsyncComponent(() => import("./AnnoMessage.vue"));
         case EventTypes().DocMessageEvent:
           return defineAsyncComponent(() => import("./DocMessage.vue"));
-        case EventTypes().MDMessageEvent:
+        case EventTypes().MarkdownMessageEvent:
           return defineAsyncComponent(() => import("./MDMessage.vue"));
         default:
           return defineAsyncComponent(() => import("./DefaultMessage.vue"));
@@ -94,6 +94,8 @@ export default {
 
   .bubble {
     border-radius: 10px;
+
+    max-width: 70%;
 
     background-color: theme-color(background-upper);
 

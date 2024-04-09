@@ -6,10 +6,14 @@
       </el-icon>
       <div />
       <el-icon
-        v-show="!isDefault && this.payload.type != 'camp'"
+        v-show="
+          !isDefault &&
+          this.payload.type != 'camp' &&
+          this.payload.type != 'user'
+        "
         id="back"
         class="icon"
-        @click="defaultComponent"
+        @click="back"
       >
         <CloseBold />
       </el-icon>
@@ -17,7 +21,7 @@
     <div v-if="isDefault" class="loading-view">
       <Loading />
     </div>
-    <component :is="subComponent" v-else :rendData="payload" />
+    <component :is="subComponent" v-else :rendData="payload.data" />
   </element>
 </template>
 
@@ -33,10 +37,31 @@ export default {
 
   data() {
     return {
-      payload: {},
+      payload: {
+        data: {},
+        type: "",
+      },
       isDefault: true,
       subComponent: null,
       loaded: false,
+      defaultData: {},
+      typeMap: {
+        task: defineAsyncComponent(() =>
+          import("@/components/Task/TaskPanel.vue")
+        ),
+        project: defineAsyncComponent(() =>
+          import("@/components/Project/ProjectPanel.vue")
+        ),
+        anno: defineAsyncComponent(() =>
+          import("@/components/Camp/AnnoPanel.vue")
+        ),
+        camp: defineAsyncComponent(() =>
+          import("@/components/Camp/CampPanel.vue")
+        ),
+        user: defineAsyncComponent(() =>
+          import("@/components/User/UserPanel.vue")
+        ),
+      },
     };
   },
 
@@ -51,38 +76,35 @@ export default {
   },
 
   methods: {
-    handleEvent(event) {
+    handleEvent(event, type) {
       console.log(event);
-      this.payload = event;
+      this.payload = {
+        data: event,
+        type: type,
+      };
       this.loadComponent();
     },
     loadComponent() {
       this.loaded = false;
-      const typeMap = {
-        task: defineAsyncComponent(() =>
-          import("@/components/Task/TaskPanel.vue")
-        ),
-        project: defineAsyncComponent(() =>
-          import("@/components/Project/ProjectPanel.vue")
-        ),
-        anno: defineAsyncComponent(() =>
-          import("@/components/Camp/AnnoPanel.vue")
-        ),
-        camp: defineAsyncComponent(() =>
-          import("@/components/Camp/CampPanel.vue")
-        ),
-      };
-      if (!typeMap[this.payload.type]) {
+      if (!this.typeMap[this.payload.type]) {
         this.defaultComponent();
         return;
+      } else if (
+        this.typeMap[this.payload.type] == "camp" ||
+        this.typeMap[this.payload.type] == "user"
+      ) {
+        this.default = this.payload;
       }
-      this.subComponent = typeMap[this.payload.type];
+      this.subComponent = this.typeMap[this.payload.type];
       this.isDefault = false;
       this.loaded = true;
     },
     defaultComponent() {
       this.isDefault = true;
       this.loaded = false;
+    },
+    back() {
+      this.loadComponent(this.defaultData);
     },
     handleExpand() {
       this.$emit("toggle");

@@ -4,11 +4,7 @@
     <small>发布于message.beginAt</small>
     <p>message.content</p>
     <small>由message.owner发布</small>
-    <Button
-      label="详情"
-      colored
-      @click="subPanelRend"
-    />
+    <Button label="详情" colored @click="subPanelRend" />
   </element>
 </template>
 
@@ -30,7 +26,7 @@ export default {
 
   methods: {
     subPanelRend() {
-      eventBus.publish("rend", this.message);
+      eventBus.publish("rend", this.message, "anno");
     },
   },
 };

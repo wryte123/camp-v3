@@ -23,7 +23,7 @@ const rules = reactive({
   ],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 6, max: 20, message: "密码长度在 6 到 20 个字符", trigger: "blur" },
+    { min: 8, max: 20, message: "密码长度在 8 到 20 个字符", trigger: "blur" },
   ],
   confirmPassword: [
     { required: true, message: "请再次输入密码", trigger: "blur" },
@@ -44,21 +44,21 @@ function valipassword(rule, values, callback) {
 }
 
 const handleRegister = async () => {
-  try {console.log(rulesForm);
-  user.username = rulesForm.username;
-  user.email = rulesForm.email;
-  user.p = rulesForm.password;
-  const response = await registerUser(user);
-  console.log(response);
-  const token = response.token;
-  const userId = response.u_id;
-  localStorage.setItem("token", token);
-  localStorage.setItem("userId", userId);}
-  catch (error) {
+  try {
+    console.log(rulesForm);
+    user.username = rulesForm.username;
+    user.email = rulesForm.email;
+    user.p = rulesForm.password;
+    const response = await registerUser(user);
+    console.log(response);
+    const token = response.token;
+    const userId = response.u_id;
+    localStorage.setItem("token", token);
+    localStorage.setItem("userId", userId);
+  } catch (error) {
     console.log(error);
   }
 };
-
 </script>
 
 <template>
@@ -71,31 +71,13 @@ const handleRegister = async () => {
         :rules="rules"
         :model="rulesForm"
       >
-        <el-form-item
-          label="用户名"
-          size="large"
-          prop="username"
-        >
-          <el-input
-            v-model="rulesForm.username"
-            placeholder="username"
-          />
+        <el-form-item label="用户名" size="large" prop="username">
+          <el-input v-model="rulesForm.username" placeholder="username" />
         </el-form-item>
-        <el-form-item
-          label="Email"
-          size="large"
-          prop="email"
-        >
-          <el-input
-            v-model="rulesForm.email"
-            placeholder="E-mail"
-          />
+        <el-form-item label="Email" size="large" prop="email">
+          <el-input v-model="rulesForm.email" placeholder="E-mail" />
         </el-form-item>
-        <el-form-item
-          label="Password"
-          size="large"
-          prop="password"
-        >
+        <el-form-item label="Password" size="large" prop="password">
           <el-input
             v-model="rulesForm.password"
             placeholder="Password"
@@ -104,11 +86,7 @@ const handleRegister = async () => {
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item
-          label="确认密码"
-          size="large"
-          prop="confirmPassword"
-        >
+        <el-form-item label="确认密码" size="large" prop="confirmPassword">
           <el-input
             v-model="rulesForm.confirmPassword"
             placeholder="Confirm Password"
@@ -121,12 +99,7 @@ const handleRegister = async () => {
           <el-button @click="$router.push({ name: 'login' })">
             返回登录
           </el-button>
-          <el-button
-            type="primary"
-            @click="handleRegister"
-          >
-            注册
-          </el-button>
+          <el-button type="primary" @click="handleRegister"> 注册 </el-button>
         </el-form-item>
       </el-form>
     </el-card>

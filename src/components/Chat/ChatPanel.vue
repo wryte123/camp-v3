@@ -1,5 +1,8 @@
 <template>
   <element id="chat-panel" @click="handleWindowClick">
+    <OverlayWindow v-show="showCreatePanel">
+      <CreateCampPanel @close="showCreatePanel = false" />
+    </OverlayWindow>
     <section id="list">
       <div class="top">
         <section class="top-left">
@@ -11,7 +14,7 @@
           </div>
         </section>
         <div>
-          <Plus class="panel-icon" />
+          <Plus class="panel-icon" @click="showCreatePanel = true" />
         </div>
       </div>
       <el-skeleton :loading="!isListLoaded" animated>
@@ -26,9 +29,7 @@
               variant="circle"
               style="width: 50px; height: 50px"
             />
-            <div style="width: 200px; height: 100%">
-              <el-skeleton-item variant="h4" />
-            </div>
+            <el-skeleton-item variant="h4" />
           </div>
         </template>
         <template #default>
@@ -40,19 +41,21 @@
               :class="{ active: currentCamp.index === index }"
               @click="selectCamp(index)"
             >
-              <el-avatar><Coffee /></el-avatar>
-              <div>
-                <h4>{{ camp.name }}</h4>
-                <p>收到{{ camp.newMessageCount }}条新消息</p>
-              </div>
+              <Avatar v-if="camp.isPrivate" :user="camp.opposite.user.id" />
+              <el-avatar v-else><Coffee /></el-avatar>
+              <h4>
+                {{ camp.isPrivate ? camp.opposite.user.username : camp.name }}
+              </h4>
+              <el-badge
+                :value="camp.unread"
+                style="margin-left: auto"
+              ></el-badge>
             </div>
           </el-scrollbar>
         </template>
       </el-skeleton>
     </section>
-    <section v-if="isDefault" id="no-chat">
-      Hello,&nbsp;<span>Campfire!😊</span>
-    </section>
+    <h1 v-if="isDefault" id="no-chat">Hello,&nbsp;<span>Campfire</span>!😊</h1>
     <section
       v-else
       id="chat"
@@ -76,6 +79,7 @@
           v-model="toSendMD"
           :show-code-row-number="true"
           placeholder="请输入Markdown..."
+          preview-theme="vuepress"
           :toolbars-exclude="[
             'pageFullscreen',
             'fullscreen',
@@ -96,7 +100,11 @@
             @click="toggleMarkdownMode"
           />
           <p ref="emoji" style="font-size: 20px">😊</p>
-          <Promotion color="white" class="panel-icon" @click="sendMarkdown" />
+          <Promotion
+            color="white"
+            class="panel-icon"
+            @click="handleMarkdownSend"
+          />
         </div>
       </div>
       <div v-else id="submit">
@@ -170,14 +178,17 @@
 <script>
 import ChatMessage from "./Messages/ChatMessage.vue";
 import RegularButton from "../RegularButton.vue";
-import { UserAPI, FileAPI, CampAPI } from "@/scripts/api.js";
+import OverlayWindow from "../OverlayWindow.vue";
+import CreateCampPanel from "../Camp/CreateCampPanel.vue";
+import Avatar from "../Avatar.vue";
+import { UserAPI, FileAPI, CampAPI, ProjectAPI } from "@/scripts/api.js";
 import { CurrentUser, EventTypes } from "@/scripts/session.js";
 import { eventBus } from "@/scripts/EventBus.js";
 import { cache } from "@/scripts/Cache.js";
 import { emoji } from "@/scripts/emoji.js";
+import { ElMessage } from "element-plus";
 import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-import { ElMessage } from "element-plus";
 
 export default {
   name: "ChatPanel",
@@ -185,7 +196,10 @@ export default {
   components: {
     Message: ChatMessage,
     Button: RegularButton,
+    OverlayWindow,
+    CreateCampPanel,
     MdEditor,
+    Avatar,
   },
 
   props: {
@@ -196,40 +210,51 @@ export default {
 
   data() {
     return {
-      isListLoaded: false,
-      isMessageLoaded: false,
+      currentUserID: CurrentUser.id,
+      totalUnread: 0,
       payload: {},
       camps: [],
       currentCamp: {
         id: 0,
         messages: [],
       },
-      showEmojiPanel: false,
+
       emojis: emoji,
       toSendMD: "",
       toSend: "",
+
+      isListLoaded: false,
+      isMessageLoaded: false,
       isDefault: true,
+
+      showEmojiPanel: false,
+      showCreatePanel: false,
     };
   },
 
   created() {
     eventBus.subscribe("rend", this.handleRend);
+    eventBus.subscribe("toprivate", this.toPrivate);
+    eventBus.subscribe("message", this.handleNewMessage);
     this.fetchCampData();
-    // this.fetchMessageData();
+  },
+
+  beforeDestroy() {
+    eventBus.unsubscribe("rend", this.handleRend);
+    eventBus.unsubscribe("toprivate", this.toPrivate);
+    eventBus.unsubscribe("message", this.handleNewMessage);
   },
 
   watch: {
     isMessageLoaded(newValue) {
       if (newValue === true) {
-        let bar = this.$refs.bar;
-        let board = this.$refs.board;
-        bar.scrollTo(0, board.clientHeight);
+        setTimeout(() => {
+          let bar = this.$refs.bar;
+          let board = this.$refs.board;
+          bar.scrollTo(0, board.clientHeight);
+        }, 50);
       }
     },
-  },
-
-  beforeDestroy() {
-    eventBus.unsubscribe("rend", this.handleRend);
   },
 
   methods: {
@@ -274,8 +299,39 @@ export default {
     },
 
     handleRend(payload) {
-      console.log("New Event");
       this.payload = payload;
+    },
+
+    toPrivate(member) {
+      let index = -1;
+      this.camps.forEach((camp, i) => {
+        if (camp.isPrivate && camp.opposite.userID === member.user.id) {
+          index = i;
+          return;
+        }
+      });
+
+      if (index === -1) {
+        let camp = {
+          projID: this.currentCamp.projID,
+          isPrivate: true,
+          name: "private",
+          membersID: [member.user.id],
+          opposite: member,
+        };
+        ProjectAPI.createCamp(camp)
+          .then((response) => {
+            camp.id = response.data.id;
+            this.camps.push(camp);
+            this.toPrivate(member.user.id);
+          })
+          .catch((error) => {
+            console.error(error);
+            ElMessage.error("跳转失败");
+          });
+      } else {
+        this.selectCamp(index);
+      }
     },
 
     handleScroll(event) {
@@ -290,11 +346,16 @@ export default {
     selectCamp(index) {
       this.isDefault = false;
       this.isMessageLoaded = false;
+      this.camps[index].unread = undefined;
       CampAPI.campInfo(this.camps[index].id).then((response) => {
         this.currentCamp = response.data;
         this.currentCamp.index = index;
-        this.currentCamp.type = "camp";
-        eventBus.publish("rend", this.currentCamp);
+
+        if (this.currentCamp.isPrivate) {
+          eventBus.publish("rend", this.camps[index].opposite.user, "user");
+        } else {
+          eventBus.publish("rend", this.currentCamp, "camp");
+        }
         this.isMessageLoaded = true;
         console.log(response.data);
       });
@@ -317,6 +378,13 @@ export default {
 
     toggleMarkdownMode() {
       this.$emit("mdtoggle");
+    },
+
+    handleNewMessage(message) {
+      let index = this.camps.findIndex(
+        (camp) => camp.id == message.data.campID
+      );
+      this.camps[index].unread += 1;
     },
 
     handleSend() {
@@ -345,22 +413,14 @@ export default {
       this.showEmojiPanel = false;
       let msg = {
         eType: EventTypes().MarkdownMessageEvent,
-        content: this.toSend,
+        content: this.toSendMD,
         ownerID: CurrentUser.id,
         campID: this.currentCamp.id,
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
       };
       CurrentUser.session.send(msg);
       this.currentCamp.messages.push(msg);
       this.toSendMD = "";
-    },
-
-    uploadImages() {
-      this.$refs.imageUploader.click();
-    },
-
-    uploadFiles() {
-      this.$refs.imageUploader.click();
     },
 
     handleImgUpload(event) {
@@ -392,6 +452,14 @@ export default {
         });
       }
     },
+
+    uploadImages() {
+      this.$refs.imageUploader.click();
+    },
+
+    uploadFiles() {
+      this.$refs.imageUploader.click();
+    },
   },
 };
 </script>
@@ -411,12 +479,6 @@ export default {
       opacity: 0;
     }
   }
-
-  .md-submit {
-    height: 50% !important;
-    width: 100% !important;
-  }
-
   .md-board {
     height: 50% !important;
   }
@@ -468,7 +530,7 @@ export default {
         align-items: center;
         justify-content: center;
         &:hover {
-          background-color: theme-color(theme);
+          background-color: theme-color(theme-upper);
           color: theme-color(white);
         }
       }
@@ -500,6 +562,7 @@ export default {
       border-color: theme-color(text);
       border-top: 1px solid theme-color(border);
       border-bottom: 1px solid theme-color(border);
+      margin-bottom: -1px;
 
       transition: all 0.1s;
       gap: 10px;
@@ -553,7 +616,7 @@ export default {
 }
 
 #board {
-  height: 100%;
+  height: 90%;
   width: 100%;
 
   transition: height 0.3s;
@@ -561,19 +624,17 @@ export default {
 
 .md-editor {
   height: 100% !important;
-
-  // :deep(.md-editor-preview-wrapper) {
-  //   display: flex;
-  // }
 }
 
 .md-submit {
   height: 50%;
-  width: 30%;
+  width: 100%;
 
   display: flex;
 
   transition: height 0.3s;
+
+  text-align: left;
 }
 
 .md-control {
@@ -589,8 +650,8 @@ export default {
 }
 
 #submit {
+  margin-top: 1%;
   position: relative;
-  bottom: 20px;
   left: 10%;
   height: 70px;
   width: 80%;

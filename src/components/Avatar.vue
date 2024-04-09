@@ -21,6 +21,9 @@ export default {
 
   computed: {
     avatarInfo() {
+      if (!this.user) {
+        return;
+      }
       if (this.user == "me") {
         return FileAPI.getMyAvatar();
       }

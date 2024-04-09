@@ -1,32 +1,33 @@
 <template>
-  <div id="home-view">
-    <Bar follow />
-
-    <header>
-      <div>
-        <Title />
-        <section>
-          <Card
-            title="功能多样"
-            text="整合了实时线上交流，代码管理，版本控制于一身的协作体系。"
-          />
-          <Card
-            title="简单便捷"
-            text="遵循了这个理念的Campfire，使得业余开发者，学生团队，以及小规模开发团队在Campfire上进行即时便捷的协作交流。"
-          />
-          <Card
-            title="快速部署"
-            text="一个可执行程序，快速启动。Campfire可以部署在你的私有环境中，专门维护属于你的开发项目。"
-          />
-        </section>
-      </div>
-      <span @click="scrollDown">
-        <el-icon :size="25"><ArrowDownBold /></el-icon>
-      </span>
-    </header>
-    <main ref="main" />
-    <!-- footer component -->
-  </div>
+  <main id="home-view">
+    <Bar />
+    <el-scrollbar height>
+      <header>
+        <div>
+          <Title />
+          <section>
+            <Card
+              title="功能多样"
+              text="整合了实时线上交流，代码管理，版本控制于一身的协作体系。"
+            />
+            <Card
+              title="简单便捷"
+              text="遵循了这个理念的Campfire，使得业余开发者，学生团队，以及小规模开发团队在Campfire上进行即时便捷的协作交流。"
+            />
+            <Card
+              title="快速部署"
+              text="一个可执行程序，快速启动。Campfire可以部署在你的私有环境中，专门维护属于你的开发项目。"
+            />
+          </section>
+        </div>
+        <span @click="scrollDown">
+          <el-icon :size="25"><ArrowDownBold /></el-icon>
+        </span>
+      </header>
+      <section ref="main" id="home-info" />
+      <!-- footer component -->
+    </el-scrollbar>
+  </main>
 </template>
 
 <script>
@@ -42,7 +43,7 @@ export default {
   },
 
   methods: {
-    async scrollDown() {
+    scrollDown() {
       const mainElement = this.$refs.main;
       window.scrollTo({
         top: mainElement.getBoundingClientRect().top + window.pageYOffset,
@@ -58,19 +59,20 @@ export default {
 
 #home-view {
   width: 100%;
+  height: 100vh;
   display: grid;
   grid-template-rows: 4fr auto;
+
+  background-color: theme-color(background-upper);
 
   color: theme-color(text);
 
   header {
-    height: 100vh;
+    height: calc(100vh - 60px);
     width: 100%;
 
     display: flex;
     flex-direction: column;
-
-    background: theme-color(white);
 
     div {
       display: flex;
@@ -99,15 +101,13 @@ export default {
     }
   }
 
-  main {
+  #home-info {
     min-height: 100vh;
     width: 100%;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    background-color: theme-color(background);
   }
 
   p {

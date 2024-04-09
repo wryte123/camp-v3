@@ -1,7 +1,7 @@
 <template>
-  <element id="member-card">
+  <element class="member-card">
     <Avatar :user="data.user.id" />
-    <div>
+    <div class="member-info">
       <h4>{{ data.user.username }}</h4>
       <small>{{ data.title }}</small>
     </div>
@@ -33,11 +33,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#member-card {
+@use "@/styles/global.scss" as *;
+
+.member-card {
+  display: grid;
+  grid-template-columns: 40px 3fr 30px;
+  gap: 10px;
+
   width: 100%;
-  height: 10%;
+  height: 80px;
   box-sizing: border-box;
 
+  align-items: center;
+
   padding: 10px;
+
+  &:hover {
+    background-color: theme-color(background-upper);
+    cursor: pointer;
+  }
+  .member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+    justify-content: center;
+  }
 }
 </style>

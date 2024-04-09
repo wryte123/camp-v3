@@ -1,7 +1,10 @@
 <template>
-  <button :class="({ colored: isColored }, { dangerous: isDangerous })">
-    {{ label }}
-  </button>
+  <element
+    :class="({ colored: isColored }, { dangerous: isDangerous })"
+    class="button"
+  >
+    <p>{{ label }}</p>
+  </element>
 </template>
 
 <script>
@@ -41,7 +44,6 @@ export default {
   border-bottom: 3px solid theme-color(theme);
   border-left: 3px solid theme-color(theme);
   border-right: 3px solid theme-color(theme);
-  background-color: theme-color(theme);
   color: theme-color(white);
 
   transition: border-color 0.1s, background-color 0.1s;
@@ -70,11 +72,15 @@ export default {
   }
 }
 
-button {
-  height: 40px;
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 30px;
   padding: 3px 10px;
   font-size: 16px;
-  width: 100px;
+  width: 80px;
 
   border-radius: 10px;
   border-top: 2px solid theme-color(text);
@@ -83,18 +89,15 @@ button {
   border-right: 2px solid theme-color(text);
 
   color: theme-color(text);
-  background-color: theme-color(white);
 
-  text-align: center;
   text-decoration: none;
 
-  display: inline-block;
   margin: 4px 2px;
   cursor: pointer;
 
   &:hover {
     background-color: theme-color(text);
-    color: #fff;
+    color: theme-color(white);
   }
 }
 </style>

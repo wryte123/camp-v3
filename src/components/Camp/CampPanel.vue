@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { sortMembers } from "@/scripts/utils";
 import MemberCard from "./MemberCard.vue";
 
 export default {
@@ -49,6 +50,15 @@ export default {
     rendData: {
       type: Object,
       required: true,
+    },
+  },
+  created() {
+    this.sortMembers(this.rendData.members);
+  },
+
+  methods: {
+    sortMembers(members) {
+      sortMembers(members, this.rendData.owner.id);
     },
   },
 };
@@ -71,13 +81,16 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-
     box-sizing: border-box;
     padding: 20px;
     gap: 10px;
 
     * {
       margin: 0;
+    }
+
+    h1 {
+      text-align: left;
     }
 
     .card-line {
@@ -104,7 +117,7 @@ export default {
         border-radius: 8px;
 
         &:hover {
-          background-color: theme-color(grey);
+          background-color: theme-color(background-upper);
         }
       }
     }

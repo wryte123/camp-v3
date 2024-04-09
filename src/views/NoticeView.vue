@@ -19,14 +19,16 @@
         :manage="false"
       />
       <div id="notices">
+        <div v-if="notices.length == 0">暂无新通知</div>
         <div
+          v-else
           v-for="(notice, index) in notices"
           :key="index"
           class="notice-item"
         >
           <div class="item-start">
             <TinyUserCard :user="getOperator" />
-            <p>邀请您加入Campfire</p>
+            <p>{{ notice.description }}</p>
           </div>
           <div></div>
           <div class="item-end">
@@ -51,6 +53,8 @@
 import SideBar from "@/components/SideBar.vue";
 import TinyUserCard from "@/components/User/TinyUserCard.vue";
 import PanelHeader from "@/components/PanelHeader.vue";
+import { eventBus } from "@/scripts/EventBus";
+import { EventTypes } from "@/scripts/session";
 // import { UserAPI } from "@/scripts/api.js";
 // import { ElMessage } from "element-plus";
 
@@ -63,14 +67,34 @@ export default {
 
   data() {
     return {
-      notices: [{}],
+      notices: [],
       isManageMode: false,
       isLoaded: false,
     };
   },
 
   created() {
+    eventBus.subscribe("invitation", this.handleInvitation);
     this.noticesOfUser();
+  },
+
+  beforeDestroy() {
+    eventBus.unsubscribe("invitation", this.handleInvitation);
+  },
+
+  computed: {
+    parsedNotices() {
+      let res = this.notices;
+
+      res.forEach((each) => {
+        if (
+          each.eType == EventTypes().CampInvitationEvent ||
+          each.eType == EventTypes().ProjectInvitationEvent
+        )
+          each.description = `${each.user}`;
+      });
+      return res;
+    },
   },
 
   methods: {
@@ -88,6 +112,9 @@ export default {
     acceptInvitation() {},
     refuseInvitation() {},
     getOperator() {},
+    handleInvitation(event) {
+      this.notices.push(event.data);
+    },
   },
 };
 </script>

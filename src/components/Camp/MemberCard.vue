@@ -3,19 +3,45 @@
     <Avatar :user="data.user.id" @click="toMemberInfo" />
     <div class="member-info">
       <h4>{{ data.nickname === "" ? data.user.username : data.nickname }}</h4>
-      <small>{{ data.memberTitle }}</small>
+      <small>{{ data.title }}</small>
     </div>
-    <span>
-      <el-icon @click="toMemberChat"><ChatLineSquare /></el-icon>
+    <span v-if="currentUserID === data.user.id" @click="editMyInfo">
+      <el-icon><Edit /></el-icon> </span
+    ><span v-else @click="toMemberChat">
+      <el-icon><ChatLineSquare /></el-icon>
     </span>
-    <span>
-      <el-icon @click="toMemberInfo"><More /></el-icon>
-    </span>
+    <el-dropdown trigger="click">
+      <span>
+        <el-icon @click="toMemberInfo"><More /></el-icon>
+      </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item>个人信息</el-dropdown-item>
+          <el-dropdown-item
+            v-if="!data.isRuler && currentUserID != data.user.id"
+          >
+            升格
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="data.isRuler && currentUserID != data.user.id"
+          >
+            降格
+          </el-dropdown-item>
+          <el-dropdown-item
+            v-if="data.isRuler && currentUserID != data.user.id"
+            divided
+          >
+            <span style="color: red">踢出此人</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </element>
 </template>
 
 <script>
 import { eventBus } from "@/scripts/EventBus.js";
+import { CurrentUser } from "@/scripts/session";
 import Avatar from "../Avatar.vue";
 
 export default {
@@ -32,9 +58,15 @@ export default {
     },
   },
 
-  method: {
+  data() {
+    return {
+      currentUserID: CurrentUser.id,
+    };
+  },
+
+  methods: {
     toMemberChat() {
-      eventBus.publish("toprivate", this.data.userID);
+      eventBus.publish("toprivate", this.data);
     },
 
     toMemberInfo() {
@@ -48,6 +80,7 @@ export default {
 @use "@/styles/global.scss" as *;
 
 .member-card {
+  height: 70px;
   box-sizing: border-box;
 
   display: grid;
@@ -58,19 +91,13 @@ export default {
   gap: 10px;
 
   &:hover {
-    background-color: theme-color(grey);
-  }
+    background-color: theme-color(background-upper);
 
-  * {
-    margin: 0;
-
-    &:hover {
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
 
   span:hover {
-    background-color: theme-color(grey) !important;
+    background-color: theme-color(background) !important;
   }
 
   .member-info {

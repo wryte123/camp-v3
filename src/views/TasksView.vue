@@ -22,7 +22,7 @@
               :filter="false"
             />
             <el-select
-              v-model="projects"
+              v-model="project"
               placeholder="选择项目..."
               filterable
               size="large"
@@ -79,7 +79,7 @@
           <div class="task-main">
             <h1>所属项目</h1>
             <el-select
-              v-model="projects"
+              v-model="project"
               placeholder="选择项目..."
               size="large"
               style="width: 360px"
@@ -91,12 +91,13 @@
                 :value="project.id"
               />
             </el-select>
-            <h1>任务属性</h1>
-            <el-form :model="taskToCreate">
-              <el-form-item label="标题">
-                <el-input v-model="taskToCreate.title" />
-              </el-form-item>
-              <el-form-item label="计划时间">
+            <div class="create-form">
+              <column>
+                <p>标题</p>
+                <el-input v-model="taskToCreate.title" style="width: 240px" />
+              </column>
+              <column>
+                <p>起止时间</p>
                 <el-date-picker
                   v-model="time"
                   type="datetimerange"
@@ -104,20 +105,29 @@
                   start-placeholder="Start date"
                   end-placeholder="End date"
                 />
-              </el-form-item>
-              <el-form-item label="类型">
-                <el-radio-group v-model="taskToCreate.isFree">
+              </column>
+              <column>
+                <p>任务类型</p>
+                <el-radio-group v-model="taskToCreate.isFree" style="gap: 10px">
                   <el-radio :value="false"> 指派式 </el-radio>
                   <el-radio :value="true"> 自由式 </el-radio>
                 </el-radio-group>
-              </el-form-item>
-              <el-form-item label="具体描述">
-                <el-input v-model="taskToCreate.content" type="textarea" />
-              </el-form-item>
-            </el-form>
-            <h2>指派成员</h2>
-            <h2>接收成员</h2>
-            <Button label="提交" @click="createTask" />
+              </column>
+              <column
+                ><p>具体描述</p>
+                <el-input
+                  v-model="taskToCreate.content"
+                  type="textarea"
+                  style="width: 480px"
+              /></column>
+              <div class="aside">
+                <h2>指派成员</h2>
+                <InvitePanel />
+                <h2>接收成员</h2>
+                <InvitePanel />
+              </div>
+              <Button label="提交" @click="createTask" />
+            </div>
           </div>
         </div>
       </el-tab-pane>
@@ -131,6 +141,7 @@ import SubPanel from "@/components/Task/SubPanel.vue";
 import PanelHeader from "@/components/PanelHeader.vue";
 import { UserAPI, TaskAPI } from "@/scripts/api.js";
 import RegularButton from "@/components/RegularButton.vue";
+import InvitePanel from "@/components/Project/InvitePanel.vue";
 import TaskCard from "@/components/Task/TaskCard.vue";
 import { ElMessage } from "element-plus";
 
@@ -141,6 +152,7 @@ export default {
     Button: RegularButton,
     TaskCard,
     PanelHeader,
+    InvitePanel,
   },
 
   data() {
@@ -253,7 +265,7 @@ main {
   }
 
   .task-main {
-    width: 90%;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
@@ -282,6 +294,31 @@ main {
 
   h1 {
     text-align: left;
+  }
+
+  .create-form {
+    height: 300px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .aside {
+      width: 50%;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: flex-start;
+
+      .button: {
+        align-self: flex-end;
+      }
+    }
+
+    p {
+      width: 80px;
+    }
   }
 }
 

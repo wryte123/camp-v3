@@ -44,11 +44,11 @@
         </div>
         <h2>工作空间</h2>
         <div class="project-part">
-          <WorkplacePanel :project="project" :branches="branches" />
+          <WorkplacePanel :project="project" :branches="project.branches" />
         </div>
         <h2>分支</h2>
         <div class="project-part">
-          <Branches :branches="branches" />
+          <Branches :branches="project.branches" />
         </div>
         <h2>成员列表</h2>
         <div id="member-panel">
@@ -95,17 +95,6 @@ export default {
     return {
       project: {},
       isLoaded: false,
-      branches: [
-        {
-          name: "main",
-          isMain: true,
-          updated: "2024-04-02T11:13:46.626Z",
-        },
-        {
-          name: "master",
-          updated: "2024-04-02T11:13:46.626Z",
-        },
-      ],
     };
   },
 

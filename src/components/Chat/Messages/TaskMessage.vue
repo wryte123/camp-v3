@@ -5,11 +5,7 @@
     <small>6参与者</small>
     <p>第一次任务</p>
     <small>由{{ message.owner }}发布</small>
-    <Button
-      label="详情"
-      colored
-      @click="subPanelRend"
-    />
+    <Button label="详情" colored @click="subPanelRend" />
   </element>
 </template>
 
@@ -31,7 +27,7 @@ export default {
 
   methods: {
     subPanelRend() {
-      eventBus.publish("rend", this.message);
+      eventBus.publish("rend", this.message, "task");
     },
   },
 };
