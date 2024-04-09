@@ -276,7 +276,9 @@ export default {
 
     fetchMessageData() {
       this.isMessageLoaded = false;
-      this.currentMessageRecord = cache.msgCache.get(this.currentCamp.id);
+      cache.get(this.currentCamp.id).then((messages) => {
+        this.currentCamp.messages = messages.reverse();
+      });
       this.isMessageLoaded = true;
     },
 
@@ -356,8 +358,7 @@ export default {
         } else {
           eventBus.publish("rend", this.currentCamp, "camp");
         }
-        this.isMessageLoaded = true;
-        console.log(response.data);
+        this.fetchMessageData();
       });
     },
 

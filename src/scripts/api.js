@@ -104,8 +104,8 @@ export const CampAPI = {
 };
 
 export const MessageAPI = {
-    async getMessageRecord(data) {
-        return getData(`/message/${data}`, data);
+    async getMessageRecord(campID, begin) {
+        return getData(`/camp/${campID}/msg?begin=${begin}`, {});
     }
 }
 

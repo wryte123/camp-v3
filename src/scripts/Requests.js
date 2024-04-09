@@ -10,7 +10,6 @@ const requestService = axios.create(
 )
 
 export async function postData(url, data) {
-    console.log(data);
     try {
         const response = await requestService.post(url, data);
         return response.data;
@@ -21,7 +20,6 @@ export async function postData(url, data) {
 }
 
 export async function getData(url, data) {
-    console.log(data);
     try {
         const response = await requestService.get(url, data);
         return response.data;

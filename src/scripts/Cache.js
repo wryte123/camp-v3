@@ -1,4 +1,5 @@
 import { MessageAPI } from "./api";
+import { eventBus } from "./EventBus";
 
 class MsgCache {
     constructor() {
@@ -10,15 +11,7 @@ class MsgCache {
     }
 
     set(campID, messages) {
-        if (!this.cache.has(campID)) {
-            this.cache.set(campID, {
-                messages: [],
-            });
-        }
-
-        const record = this.cache.get(campID);
-        record.messages = messages.sort((a, b) => a.timestamp - b.timestamp);
-        this.cache.set(campID, record);
+        this.cache.set(campID, messages);
     }
 
     prepend(campID, message) {
@@ -45,8 +38,11 @@ class MsgCache {
         this.cache.set(campID, record);
     }
 
-    get(campID) {
-        return this.cache.get(campID)?.messages || [];
+    async get(campID) {
+        if (!this.cache.has(campID)) {
+            await this.fetchMessages(campID, 0);
+        }
+        return this.cache.get(campID) || [];
     }
 
     has(campID) {
@@ -57,10 +53,18 @@ class MsgCache {
         return this.cache.delete(campID);
     }
 
-    fetchMessages(campID) {
-        let messages = [];
-        MessageAPI.getMessageRecord(campID)
+    async fetchMessages(campID, begin) {
+        try {
+            const response = await MessageAPI.getMessageRecord(campID, begin);
+            console.log(response);
+            const messages = response.data.msgs || [];
+
+            this.cache.set(campID, messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
     }
+
 
     static getInstance() {
         if (!MsgCache.instance) {

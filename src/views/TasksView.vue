@@ -311,7 +311,7 @@ main {
       gap: 10px;
       align-items: flex-start;
 
-      .button: {
+      .button {
         align-self: flex-end;
       }
     }
