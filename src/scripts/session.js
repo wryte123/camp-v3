@@ -53,7 +53,7 @@ export const initWebSocket = () => {
 class Session {
     constructor(token) {
         this.token = token;
-        this.websocket = new WebSocket(`ws://8.134.104.253:8080/ws?token=${this.token}`);
+        this.websocket = new WebSocket(`ws://8.134.104.253:9375/ws?token=${this.token}`);
         this.websocket.onopen = () => this.onOpen();
         this.websocket.onclose = () => this.onClose();
         this.websocket.onmessage = (event) => this.onMessage(event);
@@ -114,7 +114,7 @@ class Session {
             }
 
             retryCount++;
-            this.websocket = new WebSocket(`ws://8.134.104.253:8080/ws?token=${this.token}`);
+            this.websocket = new WebSocket(`ws://8.134.104.253:9375/ws?token=${this.token}`);
             setTimeout(tryConnect, 5000);
         };
 
