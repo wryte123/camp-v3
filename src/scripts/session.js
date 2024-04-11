@@ -20,6 +20,7 @@ export const CurrentUser = reactive(restoreUserInfoFromLocal() || {
     email: "",
     token: "",
     session: null,
+    lastLogin: null,
     logined: false,
 });
 
@@ -31,12 +32,13 @@ export const logout = () => {
 }
 
 
-export const userInit = (id, username, avatar, token) => {
+export const userInit = (id, username, avatar, token, lastLogin) => {
     CurrentUser.id = id;
     CurrentUser.username = username;
     CurrentUser.avatar = avatar;
     CurrentUser.token = token;
     CurrentUser.session = new Session(token);
+    CurrentUser.lastLogin = lastLogin
     CurrentUser.logined = true;
     console.log("user initialized", CurrentUser);
 
@@ -85,13 +87,13 @@ class Session {
             return
         } else if (message.eType == EventTypes().CampInvitationEvent ||
             message.eType == EventTypes().ProjectInvitationEvent) {
-            eventBus.publish("invitation", message)
+            eventBus.publish("invitation", message.data)
             ElNotification({
                 title: "新的邀请消息",
                 position: 'bottom-right',
             })
         } else {
-            eventBus.publish("message", message);
+            eventBus.publish("message", message.data);
         }
     }
 

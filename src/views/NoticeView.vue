@@ -112,8 +112,8 @@ export default {
     acceptInvitation() {},
     refuseInvitation() {},
     getOperator() {},
-    handleInvitation(event) {
-      this.notices.push(event.data);
+    handleInvitation(payload) {
+      this.notices.push(payload);
     },
   },
 };

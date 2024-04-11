@@ -1,6 +1,6 @@
 <template>
   <element id="sub-panel">
-    <div id="topbar">
+    <div id="top-bar">
       <el-icon id="enlarge" class="icon" @click="handleExpand">
         <ArrowLeftBold />
       </el-icon>
@@ -138,7 +138,7 @@ export default {
 
   transition: width 0.1s;
 
-  #topbar {
+  #top-bar {
     width: 100%;
     height: 40px;
 
@@ -164,6 +164,13 @@ export default {
         margin: 0;
       }
     }
+  }
+}
+
+.loading-view {
+  svg {
+    position: relative;
+    top: -40px;
   }
 }
 </style>

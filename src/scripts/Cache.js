@@ -1,70 +1,86 @@
+import { ref } from "vue";
 import { MessageAPI } from "./api";
 import { eventBus } from "./EventBus";
+import { CurrentUser } from './session';
 
 class MsgCache {
     constructor() {
-        this.cache = new Map();
+        this.msgs = new Map();
+        this.initialized = false;
+        this.initializePromise = null;
+        this.totalUnread = ref(0);
 
         eventBus.subscribe('message', (message) => {
             this.push(message.campID, message);
+            if (message.ownerID != CurrentUser.id) {
+                this.totalUnread.value += 1;
+            }
         });
     }
 
     set(campID, messages) {
-        this.cache.set(campID, messages);
+        this.msgs.set(campID, messages);
     }
 
-    prepend(campID, message) {
-        if (!this.cache.has(campID)) {
-            this.cache.set(campID, {
-                messages: [],
-            });
+    push(campID, messages) {
+        if (!this.msgs.has(campID)) {
+            this.msgs.set(campID, []);
         }
-
-        const record = this.cache.get(campID);
-        record.messages.unshift(message);
-        this.cache.set(campID, record);
+        if (!Array.isArray(messages)) {
+            messages = [messages];
+        }
+        let record = this.get(campID);
+        record.push(...messages);
     }
 
-    push(campID, message) {
-        if (!this.cache.has(campID)) {
-            this.cache.set(campID, {
-                messages: [],
-            });
-        }
-
-        const record = this.cache.get(campID);
-        record.messages.push(message);
-        this.cache.set(campID, record);
-    }
-
-    async get(campID) {
-        if (!this.cache.has(campID)) {
-            await this.fetchMessages(campID, 0);
-        }
-        return this.cache.get(campID) || [];
+    get(campID) {
+        return this.msgs.get(campID);
     }
 
     has(campID) {
-        return this.cache.has(campID);
+        return this.msgs.has(campID);
     }
 
     delete(campID) {
-        return this.cache.delete(campID);
+        return this.msgs.delete(campID);
     }
 
-    async fetchMessages(campID, begin) {
-        try {
-            const response = await MessageAPI.getMessageRecord(campID, begin);
-            console.log(response);
-            const messages = response.data.msgs || [];
+    unreadSub(num) {
+        this.totalUnread.value -= num;
+    }
 
-            this.cache.set(campID, messages);
+    unread() {
+        return this.totalUnread;
+    }
+
+    async initialize(camps) {
+        if (!this.initializePromise) {
+            this.initializePromise = new Promise((resolve, reject) => {
+                Promise.all(camps.map(camp => this.fetchMessages(camp, 0)))
+                    .then(() => {
+                        this.isInitialized = true;
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        }
+        return this.initializePromise
+    }
+
+    async fetchMessages(camp, begin) {
+        try {
+            const response = await MessageAPI.getMessageRecord(camp.id, begin);
+            const messages = response.data.msgs;
+            this.push(camp.id, messages);
+            let unread = messages.filter(message => new Date(message.timestamp) > new Date(camp.lastRead) && message.ownerID != CurrentUser.id).length;
+            this.totalUnread.value += unread;
+            camp.unread = unread;
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
     }
-
 
     static getInstance() {
         if (!MsgCache.instance) {

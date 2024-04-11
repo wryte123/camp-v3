@@ -37,11 +37,12 @@
       </div>
       <router-link to="/chat">
         <div class="sidebar-item" :class="{ active: isActive('/chat') }">
-          <ChatLineSquare
-            class="nav-icon"
-            @mouseover="showTooltip('chat')"
-            @mouseleave="hideTooltip('chat')"
-          /><transition name="fade">
+          <el-badge :value="unread" :show-zero="false"
+            ><ChatLineSquare
+              class="nav-icon"
+              @mouseover="showTooltip('chat')"
+              @mouseleave="hideTooltip('chat')" /></el-badge
+          ><transition name="fade">
             <div v-if="tooltip === 'chat'" class="tooltip">交流</div>
           </transition>
         </div>
@@ -104,6 +105,7 @@
 import Explorer from "@/components/Explorer.vue";
 import Avatar from "@/components/Avatar.vue";
 import { FileAPI } from "@/scripts/api";
+import { cache } from "@/scripts/Cache";
 
 export default {
   components: {
@@ -122,6 +124,7 @@ export default {
     return {
       tooltip: null,
       showSearch: false,
+      unread: cache.totalUnread,
     };
   },
 

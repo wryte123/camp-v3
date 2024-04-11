@@ -38,7 +38,7 @@
               v-for="(camp, index) in camps"
               :key="index"
               class="camp-brief"
-              :class="{ active: currentCamp.index === index }"
+              :class="{ active: current === index }"
               @click="selectCamp(index)"
             >
               <Avatar v-if="camp.isPrivate" :user="camp.opposite.user.id" />
@@ -49,6 +49,7 @@
               <el-badge
                 :value="camp.unread"
                 style="margin-left: auto"
+                :show-zero="false"
               ></el-badge>
             </div>
           </el-scrollbar>
@@ -66,7 +67,7 @@
         <el-scrollbar ref="bar" @scroll="handleScroll">
           <div ref="board">
             <Message
-              v-for="msg in currentCamp.messages"
+              v-for="msg in messages"
               ref="messages"
               :key="msg.id"
               :message="msg"
@@ -176,6 +177,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import ChatMessage from "./Messages/ChatMessage.vue";
 import RegularButton from "../RegularButton.vue";
 import OverlayWindow from "../OverlayWindow.vue";
@@ -211,14 +213,10 @@ export default {
   data() {
     return {
       currentUserID: CurrentUser.id,
-      totalUnread: 0,
       payload: {},
       camps: [],
-      currentCamp: {
-        id: 0,
-        messages: [],
-      },
-
+      current: -1, // 当前群聊的索引
+      messages: ref([]),
       emojis: emoji,
       toSendMD: "",
       toSend: "",
@@ -245,18 +243,6 @@ export default {
     eventBus.unsubscribe("message", this.handleNewMessage);
   },
 
-  watch: {
-    isMessageLoaded(newValue) {
-      if (newValue === true) {
-        setTimeout(() => {
-          let bar = this.$refs.bar;
-          let board = this.$refs.board;
-          bar.scrollTo(0, board.clientHeight);
-        }, 50);
-      }
-    },
-  },
-
   methods: {
     handleWindowClick(event) {
       if (!this.$refs.emoji) {
@@ -274,28 +260,16 @@ export default {
       }
     },
 
-    fetchMessageData() {
-      this.isMessageLoaded = false;
-      cache.get(this.currentCamp.id).then((messages) => {
-        this.currentCamp.messages = messages.reverse();
-      });
-      this.isMessageLoaded = true;
-    },
-
     fetchCampData() {
       this.isListLoaded = false;
       Promise.all([UserAPI.privateCamps(), UserAPI.publicCamps()]).then(
         (responses) => {
           const privateCampsResponse = responses[0];
           const publicCampsResponse = responses[1];
-          console.log(privateCampsResponse);
-          console.log(publicCampsResponse);
-
           this.camps = privateCampsResponse.data.concat(
             publicCampsResponse.data
           );
-
-          this.isListLoaded = true;
+          cache.initialize(this.camps).then((this.isListLoaded = true));
         }
       );
     },
@@ -315,7 +289,7 @@ export default {
 
       if (index === -1) {
         let camp = {
-          projID: this.currentCamp.projID,
+          projID: this.camps[this.current].projID,
           isPrivate: true,
           name: "private",
           membersID: [member.user.id],
@@ -346,25 +320,50 @@ export default {
     createCamp() {},
 
     selectCamp(index) {
+      this.current = index;
       this.isDefault = false;
       this.isMessageLoaded = false;
-      this.camps[index].unread = undefined;
       CampAPI.campInfo(this.camps[index].id).then((response) => {
-        this.currentCamp = response.data;
-        this.currentCamp.index = index;
-
-        if (this.currentCamp.isPrivate) {
+        this.camps[index].announcements = response.data.announcements;
+        this.camps[index].members = response.data.members;
+        this.camps[index].owner = response.data.owner;
+        cache.initialize(this.camps).then(() => {
+          this.camps[index].messages = cache.get(this.camps[index].id);
+          this.camps[index].messages.sort(
+            (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+          );
+          this.messages.splice(
+            0,
+            this.messages.length,
+            ...this.camps[index].messages
+          );
+          this.isMessageLoaded = true;
+          setTimeout(() => {
+            let bar = this.$refs.bar;
+            let board = this.$refs.board;
+            bar.scrollTo(0, board.clientHeight);
+          }, 100);
+        });
+        if (this.camps[index].isPrivate) {
           eventBus.publish("rend", this.camps[index].opposite.user, "user");
         } else {
-          eventBus.publish("rend", this.currentCamp, "camp");
+          eventBus.publish("rend", this.camps[index], "camp");
         }
-        this.fetchMessageData();
+        cache.unreadSub(this.camps[index].unread);
+        this.camps[index].unread = 0;
+        this.camps[index].lastRead = new Date().toISOString();
+        CampAPI.updateLastRead(
+          this.camps[index].id,
+          this.camps[index].lastRead
+        );
       });
     },
 
     loadMoreMessages() {
-      this.fetchMessageData();
-      console.log("Load more messages");
+      cache.fetchMessages(
+        this.camps[this.current],
+        this.camps[this.current].messages[0].id
+      );
     },
 
     insertEmoji(emoji) {
@@ -382,10 +381,17 @@ export default {
     },
 
     handleNewMessage(message) {
-      let index = this.camps.findIndex(
-        (camp) => camp.id == message.data.campID
-      );
-      this.camps[index].unread += 1;
+      if (message.ownerID != CurrentUser.id) {
+        this.camps.find((camp) => camp.id === message.campID).unread += 1;
+      }
+      if (message.campID == this.messages[0].campID) {
+        this.messages.push(message);
+        setTimeout(() => {
+          let bar = this.$refs.bar;
+          let board = this.$refs.board;
+          bar.scrollTo(0, board.clientHeight);
+        }, 100);
+      }
     },
 
     handleSend() {
@@ -398,11 +404,10 @@ export default {
         eType: EventTypes().TextMessageEvent,
         content: this.toSend,
         ownerID: CurrentUser.id,
-        campID: this.currentCamp.id,
+        campID: this.camps[this.current].id,
         timestamp: new Date().toISOString(),
       };
       CurrentUser.session.send(msg);
-      this.currentCamp.messages.push(msg);
       this.toSend = "";
     },
 
@@ -416,11 +421,10 @@ export default {
         eType: EventTypes().MarkdownMessageEvent,
         content: this.toSendMD,
         ownerID: CurrentUser.id,
-        campID: this.currentCamp.id,
+        campID: this.camps[this.current].id,
         timestamp: new Date().toISOString(),
       };
       CurrentUser.session.send(msg);
-      this.currentCamp.messages.push(msg);
       this.toSendMD = "";
     },
 
@@ -599,6 +603,7 @@ export default {
 
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #no-chat {
@@ -617,7 +622,7 @@ export default {
 }
 
 #board {
-  height: 90%;
+  height: calc(100% - 110px);
   width: 100%;
 
   transition: height 0.3s;
@@ -651,9 +656,7 @@ export default {
 }
 
 #submit {
-  margin-top: 1%;
-  position: relative;
-  left: 10%;
+  margin: 20px 0;
   height: 70px;
   width: 80%;
 

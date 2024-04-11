@@ -101,6 +101,10 @@ export const CampAPI = {
     async kickMember(campID, data) {
         return postData(`/camp/${campID}/members/del`, data);
     },
+    async updateLastRead(campID, data) {
+        const formattedTime = encodeURIComponent(data);
+        return postData(`/camp/${campID}/received?timestamp=${formattedTime}`, {});
+    }
 };
 
 export const MessageAPI = {
